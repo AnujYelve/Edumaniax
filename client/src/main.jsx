@@ -15,6 +15,7 @@ import { LeadershipProvider } from "./contexts/LeadershipContext";
 import { SELProvider } from "./contexts/SELContext";
 import { PerformanceProvider } from "./contexts/PerformanceContext";
 import { BlogProvider } from "./contexts/BlogContext";
+import { AudioProvider } from "./contexts/AudioContext";
 // import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from 'react-hot-toast';
 
@@ -32,8 +33,10 @@ createRoot(document.getElementById("root")).render(
                       <SELProvider>
                         <PerformanceProvider>
                           <BlogProvider>
-                            <App />
-                            <Toaster />
+                            <AudioProvider>
+                              <App />
+                              <Toaster />
+                            </AudioProvider>
                           </BlogProvider>
                         </PerformanceProvider>
                       </SELProvider>
