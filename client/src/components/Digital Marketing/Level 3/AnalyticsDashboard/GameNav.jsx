@@ -1,9 +1,9 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAudio } from "@/contexts/AudioContext";
 
 const GameNav = () => {
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const { isPlaying, toggleAudio } = useAudio();
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
@@ -20,38 +20,8 @@ const GameNav = () => {
   const handleYes = () => navigate("/digital-marketing/games");
   const handleNo = () => setShowConfirm(false);
 
-  const toggleAudio = async () => {
-    if (!audioRef.current) return;
-    try {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        await audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    } catch (err) {
-      console.error("Audio play failed:", err);
-    }
-  };
-
-  useEffect(() => {
-    const playAudio = async () => {
-      try {
-        await audioRef.current?.play();
-        setIsPlaying(true);
-      } catch {
-        setIsPlaying(false);
-      }
-    };
-    playAudio();
-  }, []);
-
   return (
     <div className="fixed top-0 left-0 w-full z-50 bg-[#263238] px-4 py-3 sm:py-6 flex items-center justify-between shadow-md rounded-none">
-      {/* Hidden Audio Element */}
-      <audio ref={audioRef} loop>
-        <source src="/financeGames6to8/bgMusic.mp3" type="audio/mp3" />
-      </audio>
 
       {/* ===== LEFT SECTION ===== */}
       <div className="flex items-center gap-2">
