@@ -251,6 +251,7 @@ import ConflictChoices from "./components/Games for 9-10/SEL/Level-2/ConflictCho
 import BodySignalMatchup from "./components/Games for 9-10/SEL/Level-2/BodySignalMatchup/BodySignalMatchup";
 import FinFestGame from "./components/Class 11-12/Finance/Game3";
 import StockTraderGame from "./components/Class 11-12/Finance/Game2";
+import SectorDetailPage from "./components/Class 11-12/Finance/SectorDetailPage";
 import InvestoQuestPro from "./components/Class 11-12/Finance/Game1";
 import SmartGoalLab from "./components/Games for 9-10/SEL/Level-3/SmartGoalLab/SmartGoalLab";
 import HelpNetworkBuilder from "./components/Games for 9-10/SEL/Level-3/HelpNetworkBuilder/HelpNetworkBuilder";
@@ -554,7 +555,8 @@ function AppContent() {
 
   const shouldShowNavbarAndFooter =
     !gameRoutes.includes(location.pathname) &&
-    !location.pathname.startsWith("/sales/dashboard");
+    !location.pathname.startsWith("/sales/dashboard") &&
+    !location.pathname.startsWith("/stock-trader-game/sector");
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -1046,6 +1048,7 @@ function AppContent() {
           {/*11-12 Finance games */}
           <Route path="/fin-fest-game" element={<FinFestGame />} />
           <Route path="/stock-trader-game" element={<StockTraderGame />} />
+          <Route path="/stock-trader-game/sector/:ticker" element={<SectorDetailPage />} />
           <Route path="/invest-quest-pro" element={<InvestoQuestPro />} />
           {/* 11-12 Finance games */}
 

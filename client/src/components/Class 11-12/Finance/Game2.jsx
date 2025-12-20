@@ -18,11 +18,13 @@ import {
 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 import { usePerformance } from "@/contexts/PerformanceContext"; // for performance
 import { useFinance } from "@/contexts/FinanceContext";
 
 const StockTraderGame = () => {
   const { completeFinanceChallenge } = useFinance();
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState("intro");
   const [currentDay, setCurrentDay] = useState(1);
   const [cash, setCash] = useState(50000);
@@ -116,12 +118,6 @@ const StockTraderGame = () => {
     },
   ];
 
-  useEffect(() => {
-    if (currentPage === "game" && !gameData.stocks) {
-      initializeGame();
-    }
-  }, [currentPage]);
-
   const initializeGame = () => {
     setGameData({
       stocks: { ...initialStocks },
@@ -129,6 +125,41 @@ const StockTraderGame = () => {
       trades: [],
     });
   };
+
+  // Restore game state when returning from sector detail page
+  useEffect(() => {
+    const savedGameState = localStorage.getItem("stockTraderGameState");
+    if (savedGameState) {
+      try {
+        const state = JSON.parse(savedGameState);
+        if (state.currentPage === "game") {
+          setCurrentPage("game");
+          setCurrentDay(state.currentDay || 1);
+          setCash(state.cash || 50000);
+          setPortfolio(state.portfolio || {});
+          // Restore gameData, and ensure stocks are initialized
+          if (state.gameData && state.gameData.stocks) {
+            setGameData(state.gameData);
+          } else {
+            // If gameData is missing, initialize it
+            initializeGame();
+          }
+          setStartTime(state.startTime || Date.now());
+          // Clear the saved state after restoring
+          localStorage.removeItem("stockTraderGameState");
+        }
+      } catch (e) {
+        console.error("Error restoring game state:", e);
+        localStorage.removeItem("stockTraderGameState");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentPage === "game" && !gameData.stocks) {
+      initializeGame();
+    }
+  }, [currentPage]);
 
   const calculateSMA = (prices, period = 5) => {
     if (prices.length < period) return prices[prices.length - 1];
@@ -456,6 +487,22 @@ const StockTraderGame = () => {
               portfolio={portfolio}
               onBuy={buyStock}
               onSell={sellStock}
+              onCardClick={(ticker, stock) => {
+                // Store stock data in localStorage for the new page
+                localStorage.setItem(`stock_${ticker}`, JSON.stringify(stock));
+                // Save current game state so we can restore it when coming back
+                const gameState = {
+                  currentPage,
+                  currentDay,
+                  cash,
+                  portfolio,
+                  gameData,
+                  startTime,
+                };
+                localStorage.setItem("stockTraderGameState", JSON.stringify(gameState));
+                // Navigate to sector detail page in the same tab
+                navigate(`/stock-trader-game/sector/${ticker}`);
+              }}
             />
           ))}
       </div>
@@ -474,7 +521,7 @@ const StockTraderGame = () => {
   );
 
   // Stock Card Component
-  const StockCard = ({ ticker, stock, portfolio, onBuy, onSell }) => {
+  const StockCard = ({ ticker, stock, portfolio, onBuy, onSell, onCardClick }) => {
     const [quantity, setQuantity] = useState(1);
     const holdings = portfolio[ticker] || 0;
     const sma = calculateSMA(stock.history);
@@ -485,9 +532,23 @@ const StockTraderGame = () => {
     const priceChangePercent =
       (priceChange / stock.history[stock.history.length - 2]) * 100;
 
+    const handleCardClick = (e) => {
+      // Don't trigger if clicking on buttons, inputs, or their children
+      if (
+        e.target.closest("button") ||
+        e.target.closest("input") ||
+        e.target.tagName === "BUTTON" ||
+        e.target.tagName === "INPUT"
+      ) {
+        return;
+      }
+      onCardClick(ticker, stock);
+    };
+
     return (
       <div
-        className={`bg-gradient-to-br ${stock.color} p-1 rounded-2xl transform hover:scale-105 transition-all duration-300 shadow-2xl`}
+        className={`bg-gradient-to-br ${stock.color} p-1 rounded-2xl transform hover:scale-105 transition-all duration-300 shadow-2xl cursor-pointer`}
+        onClick={handleCardClick}
       >
         <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20 h-full">
           {/* Header */}
