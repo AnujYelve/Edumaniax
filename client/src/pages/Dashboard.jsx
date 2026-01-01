@@ -64,13 +64,14 @@ const Dashboard = () => {
   const allModules = [
     { key: "finance", name: "Fundamentals of Finance" },
     { key: "computers", name: "Computer Science" },
-    { key: "law", name: "Fundamentals of Law" },
-    { key: "communication", name: "Communication Mastery" },
-    { key: "entrepreneurship", name: "Entrepreneurship Bootcamp" },
+    // TEMPORARILY DISABLED MODULES (keep code intact for future re-enablement)
+    // { key: "law", name: "Fundamentals of Law" },
+    // { key: "communication", name: "Communication Mastery" },
+    // { key: "entrepreneurship", name: "Entrepreneurship Bootcamp" },
     { key: "digital-marketing", name: "Digital Marketing Pro" },
-    { key: "leadership", name: "Leadership & Adaptability" },
-    { key: "environment", name: "Environmental Sustainability" },
-    { key: "sel", name: "Wellness & Mental Health" },
+    // { key: "leadership", name: "Leadership & Adaptability" },
+    // { key: "environment", name: "Environmental Sustainability" },
+    // { key: "sel", name: "Wellness & Mental Health" },
   ];
 
   // URL mapping that mirrors the routes used in `client/src/pages/Courses.jsx` course definitions
@@ -85,41 +86,42 @@ const Dashboard = () => {
       games: `/computer/games`,
       notes: `/computer/notes`,
     },
-    law: {
-      courses: `/courses?module=law`,
-      games: `/law/games`,
-      notes: `/law/notes`,
-    },
-    communication: {
-      courses: `/courses?module=communication`,
-      games: `/communications/games`,
-      notes: `/communications/notes`,
-    },
-    entrepreneurship: {
-      courses: `/courses?module=entrepreneurship`,
-      games: `/entrepreneurship/games`,
-      notes: `/entrepreneurship/notes`,
-    },
+    // TEMPORARILY DISABLED MODULES (keep code intact for future re-enablement)
+    // law: {
+    //   courses: `/courses?module=law`,
+    //   games: `/law/games`,
+    //   notes: `/law/notes`,
+    // },
+    // communication: {
+    //   courses: `/courses?module=communication`,
+    //   games: `/communications/games`,
+    //   notes: `/communications/notes`,
+    // },
+    // entrepreneurship: {
+    //   courses: `/courses?module=entrepreneurship`,
+    //   games: `/entrepreneurship/games`,
+    //   notes: `/entrepreneurship/notes`,
+    // },
     "digital-marketing": {
       courses: `/courses?module=digital-marketing`,
       games: `/digital-marketing/games`,
       notes: `/digital-marketing/notes`,
     },
-    leadership: {
-      courses: `/courses?module=leadership`,
-      games: `/leadership/games`,
-      notes: `/leadership/notes`,
-    },
-    environment: {
-      courses: `/courses?module=environment`,
-      games: `/environmental/games`,
-      notes: `/environmental/notes`,
-    },
-    sel: {
-      courses: `/courses?module=sel`,
-      games: `/social-learning/games`,
-      notes: `/social-learning/notes`,
-    },
+    // leadership: {
+    //   courses: `/courses?module=leadership`,
+    //   games: `/leadership/games`,
+    //   notes: `/leadership/notes`,
+    // },
+    // environment: {
+    //   courses: `/courses?module=environment`,
+    //   games: `/environmental/games`,
+    //   notes: `/environmental/notes`,
+    // },
+    // sel: {
+    //   courses: `/courses?module=sel`,
+    //   games: `/social-learning/games`,
+    //   notes: `/social-learning/notes`,
+    // },
   };
 
   const activeSubscription = subscriptions?.find(

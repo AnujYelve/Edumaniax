@@ -27,13 +27,14 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 const MODULE_MAPPING = {
   "Fundamentals of Finance": "finance",
   "Computers and Artificial Intelligence-Computer Science": "computers",
-  "Fundamentals of Law": "law",
-  "Communication Mastery": "communication",
-  "Entrepreneurship Bootcamp": "entrepreneurship",
+  // TEMPORARILY DISABLED MODULES (keep code intact for future re-enablement)
+  // "Fundamentals of Law": "law",
+  // "Communication Mastery": "communication",
+  // "Entrepreneurship Bootcamp": "entrepreneurship",
   "Digital Marketing Pro": "digital-marketing",
-  "Leadership & Adaptability": "leadership",
-  "Environmental Sustainability": "environment",
-  "Wellness & Mental Health": "sel",
+  // "Leadership & Adaptability": "leadership",
+  // "Environmental Sustainability": "environment",
+  // "Wellness & Mental Health": "sel",
 };
 
 const courses = [
@@ -71,57 +72,58 @@ const courses = [
     progress: 0,
     color: "blue",
   },
-  {
-    id: 3,
-    title: "Fundamentals of Law",
-    description:
-      "Navigate legal systems, understand your rights, and become an informed citizen with practical legal knowledge.",
-    image:
-      "https://images.unsplash.com/photo-1593115057322-e94b77572f20?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0",
-    notesLink: "/law/notes",
-    gamesLink: "/law/games",
-    category: "Legal",
-    difficulty: "Beginner",
-    duration: "5 weeks",
-    students: 1923,
-    rating: 4.7,
-    progress: 0,
-    color: "purple",
-  },
-  {
-    id: 4,
-    title: "Communication Mastery",
-    description:
-      "Transform your speaking, listening, and presentation skills for personal and professional success.",
-    image:
-      "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&auto=format&fit=crop&q=60",
-    notesLink: "/communications/notes",
-    gamesLink: "/communications/games",
-    category: "Soft Skills",
-    difficulty: "Beginner",
-    duration: "4 weeks",
-    students: 4156,
-    rating: 4.8,
-    progress: 0,
-    color: "orange",
-  },
-  {
-    id: 5,
-    title: "Entrepreneurship Bootcamp",
-    description:
-      "Turn innovative ideas into thriving businesses with strategic planning, leadership, and market insights.",
-    image:
-      "https://images.unsplash.com/photo-1507099985932-87a4520ed1d5?w=600&auto=format&fit=crop&q=60",
-    notesLink: "/entrepreneurship/notes",
-    gamesLink: "/entrepreneurship/games",
-    category: "Business",
-    difficulty: "Advanced",
-    duration: "10 weeks",
-    students: 2634,
-    rating: 4.9,
-    progress: 0,
-    color: "red",
-  },
+  // TEMPORARILY DISABLED MODULES (keep code intact for future re-enablement)
+  // {
+  //   id: 3,
+  //   title: "Fundamentals of Law",
+  //   description:
+  //     "Navigate legal systems, understand your rights, and become an informed citizen with practical legal knowledge.",
+  //   image:
+  //     "https://images.unsplash.com/photo-1593115057322-e94b77572f20?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0",
+  //   notesLink: "/law/notes",
+  //   gamesLink: "/law/games",
+  //   category: "Legal",
+  //   difficulty: "Beginner",
+  //   duration: "5 weeks",
+  //   students: 1923,
+  //   rating: 4.7,
+  //   progress: 0,
+  //   color: "purple",
+  // },
+  // {
+  //   id: 4,
+  //   title: "Communication Mastery",
+  //   description:
+  //     "Transform your speaking, listening, and presentation skills for personal and professional success.",
+  //   image:
+  //     "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&auto=format&fit=crop&q=60",
+  //   notesLink: "/communications/notes",
+  //   gamesLink: "/communications/games",
+  //   category: "Soft Skills",
+  //   difficulty: "Beginner",
+  //   duration: "4 weeks",
+  //   students: 4156,
+  //   rating: 4.8,
+  //   progress: 0,
+  //   color: "orange",
+  // },
+  // {
+  //   id: 5,
+  //   title: "Entrepreneurship Bootcamp",
+  //   description:
+  //     "Turn innovative ideas into thriving businesses with strategic planning, leadership, and market insights.",
+  //   image:
+  //     "https://images.unsplash.com/photo-1507099985932-87a4520ed1d5?w=600&auto=format&fit=crop&q=60",
+  //   notesLink: "/entrepreneurship/notes",
+  //   gamesLink: "/entrepreneurship/games",
+  //   category: "Business",
+  //   difficulty: "Advanced",
+  //   duration: "10 weeks",
+  //   students: 2634,
+  //   rating: 4.9,
+  //   progress: 0,
+  //   color: "red",
+  // },
   {
     id: 6,
     title: "Digital Marketing Pro",
@@ -139,70 +141,72 @@ const courses = [
     progress: 0,
     color: "pink",
   },
-  {
-    id: 7,
-    title: "Leadership & Adaptability",
-    description:
-      "Develop confident leadership, emotional intelligence, and adaptability through practical challenges.",
-    image:
-      "https://images.unsplash.com/photo-1709715357520-5e1047a2b691?w=600&auto=format&fit=crop&q=60",
-    notesLink: "/leadership/notes",
-    gamesLink: "/leadership/games",
-    category: "Leadership",
-    difficulty: "Intermediate",
-    duration: "6 weeks",
-    students: 2145,
-    rating: 4.7,
-    progress: 0,
-    color: "indigo",
-  },
-  {
-    id: 8,
-    title: "Environmental Sustainability",
-    description:
-      "Explore climate solutions, conservation strategies, and sustainable practices for a greener future.",
-    image:
-      "https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=800&q=80",
-    notesLink: "/environmental/notes",
-    gamesLink: "/environmental/games",
-    category: "Environment",
-    difficulty: "Beginner",
-    duration: "5 weeks",
-    students: 1876,
-    rating: 4.6,
-    progress: 0,
-    color: "green",
-  },
-  {
-    id: 9,
-    title: "Wellness & Mental Health",
-    description:
-      "Build emotional resilience, stress management skills, and holistic approaches to mental and physical wellness.",
-    image:
-      "https://images.unsplash.com/photo-1644952350841-070996fad2af?w=600&auto=format&fit=crop&q=60",
-    notesLink: "/social-learning/notes",
-    gamesLink: "/social-learning/games",
-    category: "Health",
-    difficulty: "Beginner",
-    duration: "4 weeks",
-    students: 3456,
-    rating: 4.9,
-    progress: 0,
-    color: "teal",
-  },
+  // TEMPORARILY DISABLED MODULES (keep code intact for future re-enablement)
+  // {
+  //   id: 7,
+  //   title: "Leadership & Adaptability",
+  //   description:
+  //     "Develop confident leadership, emotional intelligence, and adaptability through practical challenges.",
+  //   image:
+  //     "https://images.unsplash.com/photo-1709715357520-5e1047a2b691?w=600&auto=format&fit=crop&q=60",
+  //   notesLink: "/leadership/notes",
+  //   gamesLink: "/leadership/games",
+  //   category: "Leadership",
+  //   difficulty: "Intermediate",
+  //   duration: "6 weeks",
+  //   students: 2145,
+  //   rating: 4.7,
+  //   progress: 0,
+  //   color: "indigo",
+  // },
+  // {
+  //   id: 8,
+  //   title: "Environmental Sustainability",
+  //   description:
+  //     "Explore climate solutions, conservation strategies, and sustainable practices for a greener future.",
+  //   image:
+  //     "https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=800&q=80",
+  //   notesLink: "/environmental/notes",
+  //   gamesLink: "/environmental/games",
+  //   category: "Environment",
+  //   difficulty: "Beginner",
+  //   duration: "5 weeks",
+  //   students: 1876,
+  //   rating: 4.6,
+  //   progress: 0,
+  //   color: "green",
+  // },
+  // {
+  //   id: 9,
+  //   title: "Wellness & Mental Health",
+  //   description:
+  //     "Build emotional resilience, stress management skills, and holistic approaches to mental and physical wellness.",
+  //   image:
+  //     "https://images.unsplash.com/photo-1644952350841-070996fad2af?w=600&auto=format&fit=crop&q=60",
+  //   notesLink: "/social-learning/notes",
+  //   gamesLink: "/social-learning/games",
+  //   category: "Health",
+  //   difficulty: "Beginner",
+  //   duration: "4 weeks",
+  //   students: 3456,
+  //   rating: 4.9,
+  //   progress: 0,
+  //   color: "teal",
+  // },
 ];
 
 const categories = [
   "All",
   "Finance",
   "Technology",
-  "Legal",
-  "Soft Skills",
-  "Business",
+  // TEMPORARILY DISABLED CATEGORIES (keep code intact for future re-enablement)
+  // "Legal",
+  // "Soft Skills",
+  // "Business",
   "Marketing",
-  "Leadership",
-  "Environment",
-  "Health",
+  // "Leadership",
+  // "Environment",
+  // "Health",
 ];
 const difficulties = ["All", "Beginner", "Intermediate", "Advanced"];
 

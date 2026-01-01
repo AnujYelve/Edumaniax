@@ -697,189 +697,91 @@ function AppContent() {
             element={<Section8dm />}
           />
 
-          {/* Legal Awareness  */}
-          <Route path="/law/games" element={<Law />} />
+          {/* TEMPORARILY DISABLED: Legal Awareness (keep code intact for future re-enablement) */}
+          {/* <Route path="/law/games" element={<Law />} /> */}
+          {/* <Route path="/maze-of-choices" element={<MazeOfChoices />} /> */}
+          {/* <Route path="/case-hear" element={<CaseHear />} /> */}
+          {/* <Route path="/catch-your-rights" element={<CatchYourRightsGame />} /> */}
+          {/* <Route path="/puzzle-match" element={<PuzzleMatch />} /> */}
+          {/* <Route path="/sort-it-out" element={<SortItOut />} /> */}
+          {/* <Route path="/legal-quiz" element={<LegalQuiz />} /> */}
+          {/* <Route path="/law/notes/module-1" element={<Module1 />} /> */}
+          {/* <Route path="/law/notes/module-2" element={<Module2 />} /> */}
+          {/* <Route path="/law/notes/module-3" element={<Module3 />} /> */}
+          {/* <Route path="/law/notes/module-4" element={<Module4 />} /> */}
+          {/* <Route path="/law/notes/module-5" element={<Module5 />} /> */}
+          {/* <Route path="/law/notes/module-6" element={<Module6 />} /> */}
 
-          {/* Legal Awareness Games */}
+          {/* TEMPORARILY DISABLED: Communication Games (keep code intact for future re-enablement) */}
+          {/* <Route path="/communications/games" element={<Communication />} /> */}
+          {/* <Route path="/listen-up" element={<ListenUp />} /> */}
+          {/* <Route path="/say-it-like-you-mean-it" element={<SayItLikeUMeanIt />} /> */}
+          {/* <Route path="/pick-your-persuasion" element={<PickYourPersuasion />} /> */}
+          {/* <Route path="/interrupt-game" element={<InterruptGame />} /> */}
+          {/* <Route path="/feel-it-find-it-game" element={<FeelItFindItGame />} /> */}
+          {/* <Route path="/nvc-game" element={<NVCGame />} /> */}
+          {/* <Route path="/tone-fixer" element={<ToneFixer />} /> */}
+          {/* <Route path="/speak-up-without-blowing-up" element={<SpeakUpGame />} /> */}
+          {/* <Route path="/compliment-quest" element={<ComplimentQuest />} /> */}
+          {/* <Route path="/window-seat-war" element={<WindowSeatWar />} /> */}
+          {/* <Route path="/pitch-it-like-a-pro" element={<PitchItLikePro />} /> */}
+          {/* <Route path="/cool-the-conflict" element={<CoolTheConflict />} /> */}
+          {/* <Route path="/communications/notes/listen-to-understand" element={<Mod1 />} /> */}
+          {/* <Route path="/communications/notes/feelings-explorer" element={<Mod2 />} /> */}
+          {/* <Route path="/communications/notes/speak-with-purpose" element={<Mod3 />} /> */}
+          {/* <Route path="/communications/notes/conflict-resolution" element={<Mod4 />} /> */}
+          {/* <Route path="/communications/notes/online-vs-real" element={<Mod5 />} /> */}
 
-          {/* Level 4 */}
-          <Route path="/maze-of-choices" element={<MazeOfChoices />} />
-          {/* Level 3 */}
-          <Route path="/case-hear" element={<CaseHear />} />
+          {/* TEMPORARILY DISABLED: Social Learning / SEL (keep code intact for future re-enablement) */}
+          {/* <Route path="/social-learning/games" element={<SocialLearning />} /> */}
+          {/* <Route path="/mood-mirror" element={<MoodMirror />} /> */}
+          {/* <Route path="/friendship-fixer" element={<FriendshipFixer />} /> */}
+          {/* <Route path="/kindness-clicks" element={<KindnessClicks />} /> */}
+          {/* <Route path="/stress-buster-lab" element={<StressBusterLab />} /> */}
+          {/* <Route path="/conflict-quest" element={<ConflictQuest />} /> */}
+          {/* <Route path="/mind-body-match-up" element={<MindBodyMatchUp />} /> */}
+          {/* <Route path="/influence-explorer" element={<InfluenceExplorer />} /> */}
+          {/* <Route path="/control-sorter" element={<ControlSorter />} /> */}
+          {/* <Route path="/help-hub" element={<HelpHub />} /> */}
+          {/* <Route path="/mission-goal-tracker" element={<MissionGoalTracker />} /> */}
+          {/* <Route path="/my-circle-mission" element={<MyCircleMission />} /> */}
+          {/* <Route path="/social-learning/module-1" element={<KnowingMyself />} /> */}
+          {/* <Route path="/social-learning/module-2" element={<BuildPositiveRel />} /> */}
+          {/* <Route path="/social-learning/module-3" element={<HandlingStress />} /> */}
+          {/* <Route path="/social-learning/module-4" element={<SelfDiscipline />} /> */}
+          {/* <Route path="/social-learning/module-5" element={<DecisionMaking />} /> */}
 
-          {/* Level 2 */}
-          <Route path="/catch-your-rights" element={<CatchYourRightsGame />} />
-          <Route path="/puzzle-match" element={<PuzzleMatch />} />
+          {/* TEMPORARILY DISABLED: Leadership (keep code intact for future re-enablement) */}
+          {/* <Route path="/leadership/games" element={<Leadership />} /> */}
+          {/* <Route path="/leader-type" element={<LeaderTypeMatch />} /> */}
+          {/* <Route path="/vision-builder" element={<VisionBuilderGame />} /> */}
+          {/* <Route path="/communication-lab" element={<CommunicationLab />} /> */}
+          {/* <Route path="/empathy-radar" element={<EmpathyRadarGame />} /> */}
+          {/* <Route path="/decision-room" element={<DecisionRoom />} /> */}
+          {/* <Route path="/team-architect" element={<TeamArchitect />} /> */}
+          {/* <Route path="/innovation-sprint" element={<InnovationSprint />} /> */}
+          {/* <Route path="/integrity-quest" element={<IntegrityQuest />} /> */}
 
-          {/* Level 1 */}
-          <Route path="/sort-it-out" element={<SortItOut />} />
-          <Route path="/legal-quiz" element={<LegalQuiz />} />
+          {/* TEMPORARILY DISABLED: Entrepreneurship (keep code intact for future re-enablement) */}
+          {/* <Route path="/entrepreneurship/games" element={<Entrepreneurship />} /> */}
+          {/* <Route path="/innovation-explorer" element={<InnovationExplorer />} /> */}
+          {/* <Route path="/ai-startup-builder" element={<AIStartupBuilder />} /> */}
+          {/* <Route path="/ethics-and-impact" element={<EthicsAndImpact />} /> */}
+          {/* <Route path="/pitch-champion" element={<PitchChampion />} /> */}
+          {/* <Route path="/user-persona-detective" element={<UserPersonaDetective />} /> */}
+          {/* <Route path="/mvp-test" element={<MVPTest />} /> */}
 
-          {/* Legal Awareness Games Finish */}
-
-          {/* Legal Awareness Notes Page */}
-
-          <Route path="/law/notes/module-1" element={<Module1 />} />
-          <Route path="/law/notes/module-2" element={<Module2 />} />
-          <Route path="/law/notes/module-3" element={<Module3 />} />
-          <Route path="/law/notes/module-4" element={<Module4 />} />
-          <Route path="/law/notes/module-5" element={<Module5 />} />
-          <Route path="/law/notes/module-6" element={<Module6 />} />
-          {/* Legal Awareness Notes Finish */}
-
-          {/* Communication Games */}
-          <Route path="/communications/games" element={<Communication />} />
-          {/* Level -1*/}
-          <Route path="/listen-up" element={<ListenUp />} />
-          <Route
-            path="/say-it-like-you-mean-it"
-            element={<SayItLikeUMeanIt />}
-          />
-          <Route
-            path="/pick-your-persuasion"
-            element={<PickYourPersuasion />}
-          />
-
-          {/* Level 2 */}
-          <Route path="/interrupt-game" element={<InterruptGame />} />
-          <Route path="/feel-it-find-it-game" element={<FeelItFindItGame />} />
-          <Route path="/nvc-game" element={<NVCGame />} />
-
-          {/* Level - 3*/}
-          <Route path="/tone-fixer" element={<ToneFixer />} />
-          <Route
-            path="/speak-up-without-blowing-up"
-            element={<SpeakUpGame />}
-          />
-          <Route path="/compliment-quest" element={<ComplimentQuest />} />
-
-          {/*Level 4*/}
-          <Route path="/window-seat-war" element={<WindowSeatWar />} />
-          <Route path="/pitch-it-like-a-pro" element={<PitchItLikePro />} />
-          <Route path="/cool-the-conflict" element={<CoolTheConflict />} />
-
-          {/*Communication Notes Page */}
-
-          <Route
-            path="/communications/notes/listen-to-understand"
-            element={<Mod1 />}
-          />
-          <Route
-            path="/communications/notes/feelings-explorer"
-            element={<Mod2 />}
-          />
-          <Route
-            path="/communications/notes/speak-with-purpose"
-            element={<Mod3 />}
-          />
-          <Route
-            path="/communications/notes/conflict-resolution"
-            element={<Mod4 />}
-          />
-          <Route
-            path="/communications/notes/online-vs-real"
-            element={<Mod5 />}
-          />
-
-          {/* Social Learning Games for 6th-8th */}
-          <Route path="/social-learning/games" element={<SocialLearning />} />
-          {/* Level 1 */}
-          <Route path="/mood-mirror" element={<MoodMirror />} />
-          <Route path="/friendship-fixer" element={<FriendshipFixer />} />
-          <Route path="/kindness-clicks" element={<KindnessClicks />} />
-          {/* Level 2 */}
-          <Route path="/stress-buster-lab" element={<StressBusterLab />} />
-          <Route path="/conflict-quest" element={<ConflictQuest />} />
-          <Route path="/mind-body-match-up" element={<MindBodyMatchUp />} />
-          <Route path="/influence-explorer" element={<InfluenceExplorer />} />
-          {/* Control Sorter (Class 9-10, SEL Level 2) */}
-          <Route path="/control-sorter" element={<ControlSorter />} />
-          {/* Level 3 */}
-          <Route path="/help-hub" element={<HelpHub />} />
-          <Route
-            path="/mission-goal-tracker"
-            element={<MissionGoalTracker />}
-          />
-          <Route path="/my-circle-mission" element={<MyCircleMission />} />
-
-          {/* Social Learning Notes */}
-
-          <Route path="/social-learning/module-1" element={<KnowingMyself />} />
-          <Route
-            path="/social-learning/module-2"
-            element={<BuildPositiveRel />}
-          />
-          <Route
-            path="/social-learning/module-3"
-            element={<HandlingStress />}
-          />
-          <Route
-            path="/social-learning/module-4"
-            element={<SelfDiscipline />}
-          />
-          <Route
-            path="/social-learning/module-5"
-            element={<DecisionMaking />}
-          />
-
-          {/* Leadership Notes*/}
-
-          {/* Leadership Games 6-8*/}
-          <Route path="/leadership/games" element={<Leadership />} />
-          {/* level 1*/}
-          <Route path="/leader-type" element={<LeaderTypeMatch />} />
-          <Route path="/vision-builder" element={<VisionBuilderGame />} />
-
-          {/* level 2*/}
-          <Route path="/communication-lab" element={<CommunicationLab />} />
-          <Route path="/empathy-radar" element={<EmpathyRadarGame />} />
-
-          {/* level 3*/}
-          <Route path="/decision-room" element={<DecisionRoom />} />
-          <Route path="/team-architect" element={<TeamArchitect />} />
-
-          {/* level 4*/}
-          <Route path="/innovation-sprint" element={<InnovationSprint />} />
-          <Route path="/integrity-quest" element={<IntegrityQuest />} />
-
-          {/* Finish  Leadership Games 6-8*/}
-
-          {/* Entrepreneurship Notes*/}
-
-          {/* Entrepreneurship Games for 6th-8th */}
-          <Route
-            path="/entrepreneurship/games"
-            element={<Entrepreneurship />}
-          />
-          {/* Level 1 */}
-          <Route path="/innovation-explorer" element={<InnovationExplorer />} />
-          <Route path="/ai-startup-builder" element={<AIStartupBuilder />} />
-          {/*Level 2 */}
-          <Route path="/ethics-and-impact" element={<EthicsAndImpact />} />
-          <Route path="/pitch-champion" element={<PitchChampion />} />
-          {/*Level 3 */}
-          <Route
-            path="/user-persona-detective"
-            element={<UserPersonaDetective />}
-          />
-          <Route path="/mvp-test" element={<MVPTest />} />
-
-          {/* Environmental Notes*/}
-
-          {/* Environmental Games for 6th-8th */}
-          <Route path="/environmental/games" element={<Environment />} />
-          {/* Level 1 */}
-          <Route path="/classify-it" element={<ClassifyIt />} />
-          <Route path="/pick-zone" element={<PickZone />} />
-          <Route path="/chain-reaction" element={<ChainReaction />} />
-          {/* Level 2 */}
-          <Route path="/green-budget" element={<GreenBudget />} />
-          <Route path="/match-fallout" element={<MatchFallOut />} />
-          <Route path="/climate-pledge" element={<ClimatePledge />} />
-          {/* Level 3 */}
-          <Route path="/cause-scanner" element={<CauseScanner />} />
-          <Route path="/melt-down-tracker" element={<MeltDownTracker />} />
-          <Route path="/dilemma-cards" element={<DilemmaCards />} />
+          {/* TEMPORARILY DISABLED: Environmental (keep code intact for future re-enablement) */}
+          {/* <Route path="/environmental/games" element={<Environment />} /> */}
+          {/* <Route path="/classify-it" element={<ClassifyIt />} /> */}
+          {/* <Route path="/pick-zone" element={<PickZone />} /> */}
+          {/* <Route path="/chain-reaction" element={<ChainReaction />} /> */}
+          {/* <Route path="/green-budget" element={<GreenBudget />} /> */}
+          {/* <Route path="/match-fallout" element={<MatchFallOut />} /> */}
+          {/* <Route path="/climate-pledge" element={<ClimatePledge />} /> */}
+          {/* <Route path="/cause-scanner" element={<CauseScanner />} /> */}
+          {/* <Route path="/melt-down-tracker" element={<MeltDownTracker />} /> */}
+          {/* <Route path="/dilemma-cards" element={<DilemmaCards />} /> */}
 
           {/* Computer Notes*/}
 
@@ -1384,25 +1286,14 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Home />} />
             <Route path="/finance/notes" element={<FinanceNotes />} />
-            <Route path="/law/notes" element={<LegalAwarenessNotes />} />
-            <Route
-              path="/entrepreneurship/notes"
-              element={<EntrepreneurshipNotes />}
-            />
-            <Route
-              path="/communications/notes"
-              element={<CommunicationsNotes />}
-            />
-            <Route
-              path="/social-learning/notes"
-              element={<SocialLearningNotes />}
-            />
+            {/* TEMPORARILY DISABLED: Notes routes for disabled modules (keep code intact for future re-enablement) */}
+            {/* <Route path="/law/notes" element={<LegalAwarenessNotes />} /> */}
+            {/* <Route path="/entrepreneurship/notes" element={<EntrepreneurshipNotes />} /> */}
+            {/* <Route path="/communications/notes" element={<CommunicationsNotes />} /> */}
+            {/* <Route path="/social-learning/notes" element={<SocialLearningNotes />} /> */}
             <Route path="/computer/notes" element={<ComputerNotes />} />
-            <Route path="/leadership/notes" element={<LeadershipNotes />} />
-            <Route
-              path="/environmental/notes"
-              element={<EnvironmentalNotes />}
-            />
+            {/* <Route path="/leadership/notes" element={<LeadershipNotes />} /> */}
+            {/* <Route path="/environmental/notes" element={<EnvironmentalNotes />} /> */}
             <Route
               path="/digital-marketing/notes"
               element={<DigitalMarketingNotes />}
