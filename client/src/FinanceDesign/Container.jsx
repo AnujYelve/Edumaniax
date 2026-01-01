@@ -194,22 +194,16 @@ const Container = () => {
   let modules = [];
 
   if (role === "admin") {
+    // Admin sees grouped modules (existing admin UI preserved)
     modules = [
       { group: "Class 6 to 8", levels: modulesfor6to8 },
       { group: "Class 9 to 10", levels: modulesfor9to10 },
       { group: "Class 11 and above", levels: modulesfor11to12 },
     ];
-  } else if (!user) {
-    modules = modulesfor6to8;
   } else {
-    const userClass = user.userClass;
-    if (["6th", "7th", "8th"].includes(userClass)) {
-      modules = modulesfor6to8;
-    } else if (["9th", "10th"].includes(userClass)) {
-      modules = modulesfor9to10;
-    } else if (["11th", "12th"].includes(userClass)) {
-      modules = modulesfor11to12;
-    }
+    // All non-admin users see ALL modules merged together (class-based restrictions removed)
+    // Merge all modules into a single flat array for unified access
+    modules = [...modulesfor6to8, ...modulesfor9to10, ...modulesfor11to12];
   }
 
   const renderTabContent = () => {

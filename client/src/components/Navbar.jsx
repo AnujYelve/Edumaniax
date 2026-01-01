@@ -113,41 +113,42 @@ const Navbar = () => {
       icon: "/navCourses/computer.svg",
       path: "/computer/games",
     },
-    {
-      name: "Fundamentals of Law",
-      icon: "/navCourses/law.svg",
-      path: "/law/games",
-    },
-    {
-      name: "Communication Mastery",
-      icon: "/navCourses/communication.svg",
-      path: "/communications/games",
-    },
-    {
-      name: "Entrepreneurship Bootcamp",
-      icon: "/navCourses/entrepreneurship.svg",
-      path: "/entrepreneurship/games",
-    },
+    // TEMPORARILY DISABLED MODULES (keep code intact for future re-enablement)
+    // {
+    //   name: "Fundamentals of Law",
+    //   icon: "/navCourses/law.svg",
+    //   path: "/law/games",
+    // },
+    // {
+    //   name: "Communication Mastery",
+    //   icon: "/navCourses/communication.svg",
+    //   path: "/communications/games",
+    // },
+    // {
+    //   name: "Entrepreneurship Bootcamp",
+    //   icon: "/navCourses/entrepreneurship.svg",
+    //   path: "/entrepreneurship/games",
+    // },
     {
       name: "Digital Marketing Pro",
       icon: "/navCourses/digital_marketing.svg",
       path: "/digital-marketing/games",
     },
-    {
-      name: "Leadership & Adaptability",
-      icon: "/navCourses/leadership.svg",
-      path: "/leadership/games",
-    },
-    {
-      name: "Environmental Sustainability",
-      icon: "/navCourses/environmental.svg",
-      path: "/environmental/games",
-    },
-    {
-      name: "Wellness & Mental Health",
-      icon: "/navCourses/social_emotional_learning.svg",
-      path: "/social-learning/games",
-    },
+    // {
+    //   name: "Leadership & Adaptability",
+    //   icon: "/navCourses/leadership.svg",
+    //   path: "/leadership/games",
+    // },
+    // {
+    //   name: "Environmental Sustainability",
+    //   icon: "/navCourses/environmental.svg",
+    //   path: "/environmental/games",
+    // },
+    // {
+    //   name: "Wellness & Mental Health",
+    //   icon: "/navCourses/social_emotional_learning.svg",
+    //   path: "/social-learning/games",
+    // },
   ];
 
   const [open, setOpen] = useState(false);
@@ -212,68 +213,25 @@ const Navbar = () => {
               </div>
 
               {/* Dropdown - removed mt-2 and added pt-2 for seamless hover */}
-              <div className="absolute left-1/2 -translate-x-1/2 pt-2 w-[900px] z-50 hidden group-hover:block">
-                <div className="bg-white shadow-lg rounded-xl p-6">
-                  <div className="grid grid-cols-3 divide-x divide-gray-200">
-                    {/* Column 1 */}
-                    <div className="flex -ml-5 flex-col gap-y-6 pr-6">
-                      {courses.slice(0, 3).map((course) => (
-                        <Link
-                          key={course.name}
-                          to={course.path}
-                          className="flex items-center gap-3 px-3 py-2 hover:bg-[#068F36] rounded-md transition group/item"
-                        >
-                          <img
-                            src={course.icon}
-                            alt={course.name}
-                            className="w-5 h-5 group-hover/item:invert group-hover/item:brightness-0 group-hover/item:contrast-200"
-                          />
-                          <span className="text-sm font-semibold text-[#4D4C4C] group-hover/item:text-white whitespace-nowrap">
-                            {course.name}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-
-                    {/* Column 2 */}
-                    <div className="flex flex-col gap-y-6 px-6">
-                      {courses.slice(3, 6).map((course) => (
-                        <Link
-                          key={course.name}
-                          to={course.path}
-                          className="flex items-center gap-3 px-3 py-2 hover:bg-[#068F36] rounded-md transition group/item"
-                        >
-                          <img
-                            src={course.icon}
-                            alt={course.name}
-                            className="w-5 h-5 group-hover/item:invert group-hover/item:brightness-0 group-hover/item:contrast-200"
-                          />
-                          <span className="text-sm font-semibold text-[#4D4C4C] group-hover/item:text-white whitespace-nowrap">
-                            {course.name}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-
-                    {/* Column 3 */}
-                    <div className="flex flex-col gap-y-6 pl-6">
-                      {courses.slice(6).map((course) => (
-                        <Link
-                          key={course.name}
-                          to={course.path}
-                          className="flex items-center gap-3 px-3 py-2 hover:bg-[#068F36] rounded-md transition group/item"
-                        >
-                          <img
-                            src={course.icon}
-                            alt={course.name}
-                            className="w-5 h-5 group-hover/item:invert group-hover/item:brightness-0 group-hover/item:contrast-200"
-                          />
-                          <span className="text-sm font-semibold text-[#4D4C4C] group-hover/item:text-white whitespace-nowrap">
-                            {course.name}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
+              <div className="absolute left-1/2 -translate-x-1/2 pt-2 w-[600px] z-50 hidden group-hover:block">
+                <div className="bg-white shadow-lg rounded-xl p-4">
+                  <div className="grid grid-cols-3 gap-3">
+                    {courses.map((course) => (
+                      <Link
+                        key={course.name}
+                        to={course.path}
+                        className="flex items-center gap-2 px-3 py-2.5 hover:bg-[#068F36] rounded-md transition-all duration-200 w-full group/item"
+                      >
+                        <img
+                          src={course.icon}
+                          alt={course.name}
+                          className="w-5 h-5 flex-shrink-0 group-hover/item:invert group-hover/item:brightness-0 group-hover/item:contrast-200 transition-all duration-200"
+                        />
+                        <span className="text-sm font-semibold text-[#4D4C4C] group-hover/item:text-white flex-1 min-w-0 leading-tight">
+                          {course.name}
+                        </span>
+                      </Link>
+                    ))}
                   </div>
                 </div>
               </div>

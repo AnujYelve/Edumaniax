@@ -1,29 +1,87 @@
+# Dependencies
 node_modules
-.git
+package-lock.json
+
+# Environment and secrets (CRITICAL)
 .env
-npm-debug.log
-yarn-error.log
-Dockerfile*
-**/*.md
-prisma/migrations
+.env.local
+.env.*.local
+.env.production
+.env.development
 
-# Exclude deployment/ops scripts and utility scripts
-scripts/check-pro-status.js
-scripts/check-user.js
-scripts/delete-user-by-phone.js
-scripts/production-pro-activation.js
-
-# Local files
-.DS_Store
-**/*.local.*
-node_modules
-npm-debug.log
+# Git files
 .git
 .gitignore
+.gitattributes
+
+# Deployment files with secrets (CRITICAL - Must not be in image)
+deploy.sh
+deploy-secure.sh
+app.yaml
+
+# Internal admin scripts (CRITICAL - Must not be in image)
+scripts/
+check-*.js
+test*.js
+cleanup*.js
+addEmailField.js
+killIdleConnections.js
+maintenance.js
+restart.js
+check-subscriptions.js
+check-db.js
+testCertification.js
+testConnection.js
+
+# Payment/testing files with sensitive data
+../payment-commands.txt
+../postman_file.json
+*.postman_collection.json
+
+# Documentation
+*.md
 README.md
-.env
+PROJECT_ANALYSIS_REPORT.md
+
+# Build and logs
+dist/
+build/
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 .nyc_output
 coverage
 .cache
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
-*.log
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker files
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# Prisma migrations (not needed in production image)
+prisma/migrations/

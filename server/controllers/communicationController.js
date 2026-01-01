@@ -2,12 +2,15 @@ import prisma from "../utils/prisma.js";
 import connectionManager from "../connectionManager.js";
 
 export const markChallengeComplete = async (req, res) => {
-  const { userClass , moduleIndex, challengeIndex } = req.body;
+  const { moduleIndex, challengeIndex } = req.body;
   const userId = req.user.id;
 
-   if (!userClass || moduleIndex === undefined || challengeIndex === undefined) {
+   if (moduleIndex === undefined || challengeIndex === undefined) {
     return res.status(400).json({ success: false, message: "Missing required fields" });
   }
+
+  // Always use "6-9" for new challenge records (class-based restrictions removed)
+  const userClass = "6-9";
   
   try {
     const progress = await connectionManager.safeQuery(async () => {

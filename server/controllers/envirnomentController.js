@@ -1,8 +1,11 @@
 import prisma from "../utils/prisma.js";
 
 export const markChallengeComplete = async (req, res) => {
-  const { userClass , moduleIndex, challengeIndex } = req.body;
+  const { moduleIndex, challengeIndex } = req.body;
   const userId = req.user.id;
+
+  // Always use "6-9" for new challenge records (class-based restrictions removed)
+  const userClass = "6-9";
  
   try {
     const progress = await prisma.environmentChallenge.upsert({

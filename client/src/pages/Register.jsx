@@ -77,8 +77,7 @@ const Register = () => {
       }
       if (!formData.password.trim()) errs.password = "Password is required";
       else if (formData.password.length < 6) errs.password = "Password must be at least 6 characters";
-      if (!formData.userClass.trim())
-        errs.userClass = "User class is required";
+      // userClass is optional - removed mandatory validation (class-based restrictions removed)
     }
 
     if (currentStep === 3) {
@@ -189,7 +188,8 @@ const Register = () => {
         password: formData.password,
         name: formData.name,
         age: parseInt(formData.age, 10),
-        userClass: formData.userClass,
+        // userClass is optional - backend will default to "6-9" if not provided
+        ...(formData.userClass && formData.userClass.trim() ? { userClass: formData.userClass.trim() } : {}),
         characterGender: formData.gender,
         characterName: formData.characterName,
         characterStyle: formData.style,

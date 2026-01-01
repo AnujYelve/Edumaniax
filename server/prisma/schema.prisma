@@ -9,8 +9,7 @@ datasource db {
 
 model User {
   id                         String                      @id @default(cuid())
-  // [DISABLED FOR NOW]: Make phone number optional
-  phonenumber                String?                     @unique
+  phonenumber                String                      @unique
   name                       String
   age                        Int
   userClass                  String
@@ -19,9 +18,7 @@ model User {
   characterStyle             String
   characterTraits            String[]
   createdAt                  DateTime                    @default(now())
-  // [DISABLED FOR NOW]: Keep email/password optional to allow non-destructive push; app enforces requirements
   email                      String?
-  password                   String?
   selectedModule             String?
   role                       UserRole                    @default(USER)
   avatar                     String?
