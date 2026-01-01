@@ -1,8 +1,22 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.local
+.env.*.local
 
 /generated/prisma
 
+# Deployment files with secrets (CRITICAL)
 deploy.sh
-*.txt
+deploy-secure.sh
+app.yaml
+
+# Internal scripts
+scripts/
+check-*.js
+test*.js
+cleanup*.js
+addEmailField.js
+killIdleConnections.js
+maintenance.js
+restart.js

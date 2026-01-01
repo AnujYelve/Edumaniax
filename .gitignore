@@ -1,3 +1,69 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Environment variables (CRITICAL - Never commit secrets)
 .env
-*.txt
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Sensitive/Internal Files (CRITICAL - Must not be committed)
+# Deployment scripts with hardcoded secrets
+server/deploy.sh
+server/deploy-secure.sh
+server/app.yaml
+
+# Internal admin scripts
+server/scripts/
+server/check-*.js
+server/test*.js
+server/cleanup*.js
+server/addEmailField.js
+server/killIdleConnections.js
+server/maintenance.js
+server/restart.js
+
+# Payment/testing files with sensitive data
+payment-commands.txt
+postman_file.json
+*.postman_collection.json
+
+# Test files with user data
+client/tmp-test-access.mjs
+client/dist/
+
+# Documentation (internal analysis)
+PROJECT_ANALYSIS_REPORT.md
+
+# Build outputs
+dist/
+build/
+*.log
+*.log.*
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Keep specific .txt files if needed, but ignore sensitive ones
+# Note: payment-commands.txt is explicitly ignored above
