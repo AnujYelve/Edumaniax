@@ -45,13 +45,6 @@ const FEATURES = {
   CUSTOM_BRANDING: 'custom_branding'
 };
 
-// Define access levels for different user classes
-const CLASS_LEVELS = {
-  '6-8': ['beginner', 'intermediate'],
-  '9-10': ['beginner', 'intermediate', 'advanced'],
-  '11-12': ['intermediate', 'advanced', 'expert']
-};
-
 /**
  * ACCESS CONTROL RULES
  * 

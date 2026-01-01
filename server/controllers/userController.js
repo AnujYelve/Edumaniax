@@ -34,7 +34,6 @@ const registerWithEmailPassword = async (req, res) => {
       !password ||
       !name ||
       !age ||
-      !userClass ||
       !characterGender ||
       !characterName ||
       !characterStyle ||
@@ -42,6 +41,9 @@ const registerWithEmailPassword = async (req, res) => {
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
+
+    // userClass is optional - default to "6-9" if not provided
+    const finalUserClass = userClass && userClass.trim() ? userClass.trim() : "6-9";
 
     const existingByEmail = await prisma.user.findFirst({ where: { email } });
     if (existingByEmail) {
@@ -70,7 +72,7 @@ const registerWithEmailPassword = async (req, res) => {
           password: passwordHash,
           name,
           age,
-          userClass,
+          userClass: finalUserClass,
           characterGender,
           characterName,
           characterStyle,
@@ -90,7 +92,7 @@ const registerWithEmailPassword = async (req, res) => {
             // password excluded due to schema mismatch
             name,
             age,
-            userClass,
+            userClass: finalUserClass,
             characterGender,
             characterName,
             characterStyle,
@@ -490,6 +492,15 @@ const updateProfile = async (req, res) => {
         return res.status(400).json({ message: "Age must be between 1 and 100" });
       }
       updateData.age = age;
+    }
+
+    // userClass is optional - default to "6-9" if provided but empty, or if not provided at all
+    if (updateData.userClass !== undefined) {
+      if (!updateData.userClass || !updateData.userClass.trim()) {
+        updateData.userClass = "6-9";
+      } else {
+        updateData.userClass = updateData.userClass.trim();
+      }
     }
 
     // [DISABLED FOR NOW]: phone update logic removed

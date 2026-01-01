@@ -6,17 +6,20 @@ import prisma from "../utils/prisma.js";
 // Create a new certification
 const createCertification = async (req, res) => {
   try {
-    const { moduleName, userClass } = req.body;
+    const { moduleName } = req.body;
     const userId = req.user.id;
     const userName = req.user.name;
 
     // Validate required fields
-    if (!moduleName || !userClass) {
+    if (!moduleName) {
       return res.status(400).json({
         success: false,
-        message: "Module name and user class are required",
+        message: "Module name is required",
       });
     }
+
+    // Always use "6-9" for new certifications (class-based restrictions removed)
+    const userClass = "6-9";
 
     // Check if certification already exists for this user, module, and class
     const existingCertification = await prisma.certification.findUnique({
@@ -32,7 +35,7 @@ const createCertification = async (req, res) => {
     if (existingCertification) {
       return res.status(400).json({
         success: false,
-        message: "Certification already exists for this module and class",
+        message: "Certification already exists for this module",
       });
     }
 
@@ -103,9 +106,8 @@ const getUserCertifications = async (req, res) => {
     if (moduleName) {
       whereClause.moduleName = moduleName;
     }
-    if (userClass) {
-      whereClause.userClass = userClass;
-    }
+    // userClass filter removed - all users see all certifications regardless of class
+    // (keeping query param for backward compatibility but ignoring it)
 
     const certifications = await prisma.certification.findMany({
       where: whereClause,
