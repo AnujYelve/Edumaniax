@@ -43,12 +43,6 @@ const BrandVoiceChallenge = () => {
 
     const [state, setState] = useState(getInitialState());
 
-    useEffect(() => {
-        if (finalStep && result?.finalBreakdown?.overallTotal >= finalPassingScore) {
-            completeDMChallenge(1, 2);
-        }
-    }, [finalStep, result]);
-
     // Destructure state for easier access
     const {
         selectedPlatform,
@@ -61,6 +55,18 @@ const BrandVoiceChallenge = () => {
         captionScore,
         finalStep,
     } = state;
+
+    // Calculate passing threshold for the final 11-point score (e.g., 70% of 11 = 7.7, rounded to 8 for simplicity).
+    const finalPassingScore = 8; // Out of 11
+
+    // Passing threshold for the first task (response writing out of 8 points)
+    const firstTaskPassingScore = 5; // Example: 5 out of 8 for Chat Responses (3) + Tone Match (5)
+
+    useEffect(() => {
+        if (finalStep && result?.finalBreakdown?.overallTotal >= finalPassingScore) {
+            completeDMChallenge(1, 2);
+        }
+    }, [finalStep, result, finalPassingScore, completeDMChallenge]);
 
     /**
      * Resets all game states to their initial values.
@@ -104,7 +110,7 @@ const BrandVoiceChallenge = () => {
 
     const handleSubmit = async () => {
         const platformScores = {};
-        setSubmitted(true);
+        setState(prev => ({ ...prev, submitted: true }));
 
         for (let s of scenarios) {
             const userReply = responses[s.id];
@@ -177,14 +183,17 @@ ONLY output the JSON. Nothing else.
         const toneMatchAcrossPlatformsPoints = ((totalTonesRaw + totalFitsRaw) / 9) * 5;
 
         // Store scores including the scaled ones for display in Step 2
-        setResult({
-            scores: platformScores,
-            chatResponsesPoints: chatResponsesPoints,
-            toneMatchAcrossPlatformsPoints: toneMatchAcrossPlatformsPoints,
-            totalRawPlatformScore: (totalNeedsRaw + totalTonesRaw + totalFitsRaw) // For raw 15-point display in summary
-        });
-        setSubmitted(false); // Reset submitted state after evaluation
-        setStep(2); // Move to the evaluation summary for platform responses
+        setState(prev => ({
+            ...prev,
+            result: {
+                scores: platformScores,
+                chatResponsesPoints: chatResponsesPoints,
+                toneMatchAcrossPlatformsPoints: toneMatchAcrossPlatformsPoints,
+                totalRawPlatformScore: (totalNeedsRaw + totalTonesRaw + totalFitsRaw) // For raw 15-point display in summary
+            },
+            submitted: false, // Reset submitted state after evaluation
+            step: 2 // Move to the evaluation summary for platform responses
+        }));
     };
 
 
@@ -228,7 +237,7 @@ ONLY return the JSON.
                 cta: 0,
                 feedback: "Invalid JSON from Gemini.",
             };
-            setCaptionScore(parsedCaptionScore); // Store raw caption score
+            setState(prev => ({ ...prev, captionScore: parsedCaptionScore })); // Store raw caption score
 
             // --- Calculate final overall score based on user's new rules ---
             const rawCaptionTotal = (parsedCaptionScore?.creativity || 0) + (parsedCaptionScore?.voice || 0) + (parsedCaptionScore?.cta || 0); // Max 5
@@ -243,16 +252,19 @@ ONLY return the JSON.
                 captionWritingPoints;
 
             // Update result state with the new final breakdown for display
-            setResult(prevResult => ({
-                ...prevResult,
-                finalBreakdown: {
-                    chatResponses: (prevResult?.chatResponsesPoints || 0),
-                    toneMatchAcrossPlatforms: (prevResult?.toneMatchAcrossPlatformsPoints || 0),
-                    captionWriting: captionWritingPoints,
-                    overallTotal: overallFinalCalculatedTotal
-                }
+            setState(prev => ({
+                ...prev,
+                result: {
+                    ...prev.result,
+                    finalBreakdown: {
+                        chatResponses: (prev.result?.chatResponsesPoints || 0),
+                        toneMatchAcrossPlatforms: (prev.result?.toneMatchAcrossPlatformsPoints || 0),
+                        captionWriting: captionWritingPoints,
+                        overallTotal: overallFinalCalculatedTotal
+                    }
+                },
+                finalStep: true // Show the final score section
             }));
-            setFinalStep(true); // Show the final score section
 
             // ⏱️ Track performance and update DB
             const endTime = Date.now();
@@ -281,30 +293,27 @@ ONLY return the JSON.
         } catch (err) {
             console.error("❌ Error scoring caption:", err);
             // Set scores to 0 in case of API failure for a graceful display
-            setCaptionScore({
-                creativity: 0,
-                voice: 0,
-                cta: 0,
-                feedback: "Failed to fetch score.",
-            });
-            setResult(prevResult => ({
-                ...prevResult,
-                finalBreakdown: {
-                    chatResponses: (prevResult?.chatResponsesPoints || 0),
-                    toneMatchAcrossPlatforms: (prevResult?.toneMatchAcrossPlatformsPoints || 0),
-                    captionWriting: 0, // Set to 0 if API fails
-                    overallTotal: (prevResult?.chatResponsesPoints || 0) + (prevResult?.toneMatchAcrossPlatformsPoints || 0) // Only previous scores
-                }
+            setState(prev => ({
+                ...prev,
+                captionScore: {
+                    creativity: 0,
+                    voice: 0,
+                    cta: 0,
+                    feedback: "Failed to fetch score.",
+                },
+                result: {
+                    ...prev.result,
+                    finalBreakdown: {
+                        chatResponses: (prev.result?.chatResponsesPoints || 0),
+                        toneMatchAcrossPlatforms: (prev.result?.toneMatchAcrossPlatformsPoints || 0),
+                        captionWriting: 0, // Set to 0 if API fails
+                        overallTotal: (prev.result?.chatResponsesPoints || 0) + (prev.result?.toneMatchAcrossPlatformsPoints || 0) // Only previous scores
+                    }
+                },
+                finalStep: true // Still show final step even if API fails
             }));
-            setFinalStep(true); // Still show final step even if API fails
         }
     };
-
-    // Calculate passing threshold for the final 11-point score (e.g., 70% of 11 = 7.7, rounded to 8 for simplicity).
-    const finalPassingScore = 8; // Out of 11
-
-    // Passing threshold for the first task (response writing out of 8 points)
-    const firstTaskPassingScore = 5; // Example: 5 out of 8 for Chat Responses (3) + Tone Match (5)
 
     return (
         <div className="p-6 space-y-6 max-w-3xl mb-3 mt-3 mx-auto bg-gradient-to-br from-pink-50 to-yellow-100 rounded-3xl border-4 border-purple-200 shadow-2xl animate-fade-in">
@@ -365,7 +374,7 @@ ONLY return the JSON.
                                 key={s.id}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => setSelectedPlatform(s.id)}
+                                onClick={() => setState(prev => ({ ...prev, selectedPlatform: s.id }))}
                                 className={`cursor-pointer rounded-2xl border-4 p-5 transition-all duration-300 text-center shadow-lg ${selectedPlatform === s.id
                                     ? "border-yellow-400 bg-yellow-50"
                                     : "border-pink-300 bg-white"
@@ -477,30 +486,30 @@ ONLY return the JSON.
 
                     <div className="text-center mt-4">
                         <p className="text-lg font-bold text-green-800">
-                            🗣️ <span className="text-purple-700">Tone Match Across Platforms:</span> {result.toneMatchAcrossPlatformsPoints.toFixed(1)} / 5 points
+                            🗣️ <span className="text-purple-700">Tone Match Across Platforms:</span> {(result.toneMatchAcrossPlatformsPoints || 0).toFixed(1)} / 5 points
                         </p>
                         <p className="text-lg font-bold text-green-800 mt-1">
-                            💬 <span className="text-pink-600">Chat Responses:</span> {result.chatResponsesPoints.toFixed(1)} / 3 points
+                            💬 <span className="text-pink-600">Chat Responses:</span> {(result.chatResponsesPoints || 0).toFixed(1)} / 3 points
                         </p>
                         <p className="text-xl font-extrabold text-green-800 mt-3">
-                            Overall Response Score: {(result.toneMatchAcrossPlatformsPoints + result.chatResponsesPoints).toFixed(1)} / 8 points
+                            Overall Response Score: {((result.toneMatchAcrossPlatformsPoints || 0) + (result.chatResponsesPoints || 0)).toFixed(1)} / 8 points
                         </p>
 
                         <div className="relative w-64 mx-auto h-4 mt-4 rounded-full bg-green-200 overflow-hidden">
                             <motion.div
                                 className="h-full bg-pink-400"
                                 initial={{ width: 0 }}
-                                animate={{ width: `${((result.toneMatchAcrossPlatformsPoints + result.chatResponsesPoints) / 8) * 100}%` }}
+                                animate={{ width: `${(((result.toneMatchAcrossPlatformsPoints || 0) + (result.chatResponsesPoints || 0)) / 8) * 100}%` }}
                                 transition={{ duration: 1.0, ease: "easeOut" }}
                             ></motion.div>
                         </div>
 
-                        {(result.toneMatchAcrossPlatformsPoints + result.chatResponsesPoints) >= firstTaskPassingScore ? (
+                        {((result.toneMatchAcrossPlatformsPoints || 0) + (result.chatResponsesPoints || 0)) >= firstTaskPassingScore ? (
                             <motion.button
                                 whileHover={{ scale: 1.05, rotate: [-2, 2, -2, 0] }}
                                 whileTap={{ scale: 0.95 }}
                                 className="mt-6 px-8 py-3 bg-pink-500 text-white font-bold text-md rounded-full shadow-lg hover:bg-pink-600 transition"
-                                onClick={() => setStep(3)}
+                                onClick={() => setState(prev => ({ ...prev, step: 3 }))}
                             >
                                 ✅ Great Job! Continue to Caption Challenge 🚀
                             </motion.button>
@@ -548,7 +557,7 @@ ONLY return the JSON.
                         ].map((v) => (
                             <motion.button
                                 key={v.label}
-                                onClick={() => setVibe(v.label)}
+                                onClick={() => setState(prev => ({ ...prev, vibe: v.label }))}
                                 whileTap={{ scale: 0.9 }}
                                 className={`px-4 py-2 rounded-full border-2 font-semibold text-sm transition shadow-sm flex items-center gap-2 ${vibe === v.label
                                     ? "bg-pink-200 border-pink-500 text-pink-700 shadow-lg"
@@ -566,7 +575,7 @@ ONLY return the JSON.
                         rows={3}
                         placeholder="📲 Write your short caption here…"
                         value={caption}
-                        onChange={(e) => setCaption(e.target.value)}
+                        onChange={(e) => setState(prev => ({ ...prev, caption: e.target.value }))}
                     />
 
                     {/* Instagram Preview */}
@@ -650,18 +659,18 @@ ONLY return the JSON.
 
                     {/* Score Breakdown with Emojis */}
                     <div className="bg-white p-4 rounded-xl shadow-inner border-2 border-yellow-200 space-y-3 text-md text-gray-800 font-semibold text-center">
-                        <p>🗣️ <span className="text-purple-700">Tone Match Across Platforms:</span> <strong>{result.finalBreakdown.toneMatchAcrossPlatforms.toFixed(1)}</strong> / 5 ⭐</p>
-                        <p>💬 <span className="text-pink-600">Chat Responses:</span> <strong>{result.finalBreakdown.chatResponses.toFixed(1)}</strong> / 3 💬</p>
-                        <p>✍️ <span className="text-indigo-600">Caption Writing:</span> <strong>{result.finalBreakdown.captionWriting.toFixed(1)}</strong> / 3 📝</p>
+                        <p>🗣️ <span className="text-purple-700">Tone Match Across Platforms:</span> <strong>{(result.finalBreakdown.toneMatchAcrossPlatforms || 0).toFixed(1)}</strong> / 5 ⭐</p>
+                        <p>💬 <span className="text-pink-600">Chat Responses:</span> <strong>{(result.finalBreakdown.chatResponses || 0).toFixed(1)}</strong> / 3 💬</p>
+                        <p>✍️ <span className="text-indigo-600">Caption Writing:</span> <strong>{(result.finalBreakdown.captionWriting || 0).toFixed(1)}</strong> / 3 📝</p>
                     </div>
 
                     {/* Total Score */}
                     <div className="text-center text-2xl font-extrabold text-green-700 mt-2">
-                        🌟 Total Points: {result.finalBreakdown.overallTotal.toFixed(1)} / 11
+                        🌟 Total Points: {(result.finalBreakdown.overallTotal || 0).toFixed(1)} / 11
                     </div>
 
                     {/* Outcome Badge */}
-                    {result.finalBreakdown.overallTotal >= finalPassingScore ? (
+                    {(result.finalBreakdown.overallTotal || 0) >= finalPassingScore ? (
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
