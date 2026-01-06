@@ -134,6 +134,11 @@ const My_Purchase_Plan = () => {
       return;
     }
 
+    // Prevent multiple simultaneous submissions
+    if (loading) {
+      return;
+    }
+
     setLoading(true);
     setError("");
     setResult(null);

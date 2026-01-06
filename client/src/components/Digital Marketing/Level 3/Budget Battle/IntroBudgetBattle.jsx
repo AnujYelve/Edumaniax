@@ -153,6 +153,11 @@ export default function IntroBudgetBattle() {
   };
 
   const handleSubmit = async () => {
+    // Prevent multiple simultaneous submissions
+    if (loading) {
+      return;
+    }
+
     setLoading(true);
     setError("");
     setResult(null);
@@ -426,11 +431,11 @@ Example format:
 
         <div className="flex justify-center pt-6">
           <button
-            disabled={!validClick()}
+            disabled={loading || !validClick()}
             onClick={() => handleSubmit()}
-            className={`transform transition-all duration-300 ${validClick()
-              ? "bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 hover:scale-110 cursor-pointer animate-pulse"
-              : "bg-gray-400 cursor-not-allowed"
+            className={`transform transition-all duration-300 ${loading || !validClick()
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 hover:scale-110 cursor-pointer animate-pulse"
               } text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-lg sm:text-xl font-bold shadow-xl border-4 border-white`}
           >
             🎯 Get AI Feedback ✨
