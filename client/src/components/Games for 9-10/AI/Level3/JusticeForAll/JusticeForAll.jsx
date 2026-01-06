@@ -145,6 +145,11 @@ const JusticeForAll = () => {
   };
 
   const handleSubmit = async () => {
+    // Prevent multiple simultaneous submissions
+    if (loading) {
+      return;
+    }
+
     setLoading(true);
     setError("");
     setResult(null);
@@ -380,10 +385,10 @@ const JusticeForAll = () => {
 
             <div className="pt-4 flex justify-center">
               <button
-                disabled={!validClick()}
+                disabled={loading || !validClick()}
                 onClick={() => handleSubmit()}
                 className={`bg-gradient-to-r 
-                ${validClick() ? "cursor-pointer" : "cursor-not-allowed"}
+                ${loading || !validClick() ? "cursor-not-allowed" : "cursor-pointer"}
                    from-green-400 to-blue-500 text-white px-8 py-3 rounded-full  text-xl hover:scale-105 transition duration-300 shadow-lg`}
               >
                 💡 Get AI Feedback

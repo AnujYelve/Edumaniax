@@ -259,6 +259,12 @@ You are an expert AI tutor for a student in grades 6-8 who has just created a mo
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Prevent multiple simultaneous submissions
+    if (loading) {
+      return;
+    }
+    
     setLoading(true);
     setShowConfetti(false);
     setFeedback("");
@@ -734,9 +740,9 @@ You are an expert AI tutor for a student in grades 6-8 who has just created a mo
                         whileHover={{ scale: 1.08 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleSubmit}
-                        disabled={!income || selectedExpenses.length === 0}
+                        disabled={loading || !income || selectedExpenses.length === 0}
                         className={`${
-                          !income || selectedExpenses.length === 0
+                          loading || !income || selectedExpenses.length === 0
                             ? "opacity-50 cursor-not-allowed"
                             : ""
                         }`}

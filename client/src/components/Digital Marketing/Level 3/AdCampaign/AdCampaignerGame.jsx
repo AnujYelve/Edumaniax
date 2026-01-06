@@ -145,6 +145,11 @@ export default function AdCampaignerGame() {
   };
 
   const handleSubmit = async () => {
+    // Prevent multiple simultaneous submissions
+    if (loading) {
+      return;
+    }
+
     setLoading(true);
     setError("");
     setResult(null);

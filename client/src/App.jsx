@@ -114,6 +114,7 @@ import SortItOut from "./components/Legal Awareness/Level1/SortItOut/SortItOut";
 import AIChallengeGame from "./components/Computers/Level 1/AIChallengeGame/AIChallengeGame";
 import MeetAITypeGame from "./components/Computers/Level 1/MeetAITypeGame/MeetAITypeGame";
 import BuildABotChallenge from "./components/Computers/Level 1/BuildABotChallenge/BuildABotChallenge";
+import PromptCreatorGame from "./components/Computers/AI_new/PromptCreatorGame";
 import TrainTheBrainGame from "./components/Computers/Level 2/TrainTheBrainGame/TrainTheBrainGame";
 import SmartOrNotGame from "./components/Computers/Level 2/SmartOrNotGame/SmartOrNotGame";
 import AIProblemSolverGame from "./components/Computers/Level 2/AIProblemSolverGame/AIProblemSolverGame";
@@ -411,6 +412,7 @@ function AppContent() {
     "/AI-challenge",
     "/meet-ai-types",
     "/build-a-bot",
+    "/prompt-creator",
     "/train-the-brain",
     "/smart-or-not",
     "/ai-problem-solver",
@@ -805,6 +807,7 @@ function AppContent() {
           <Route path="/AI-challenge" element={<AIChallengeGame />} />
           <Route path="/meet-ai-types" element={<MeetAITypeGame />} />
           <Route path="/build-a-bot" element={<BuildABotChallenge />} />
+          <Route path="/prompt-creator" element={<PromptCreatorGame />} />
           {/* Level 2 games of Computers */}
           <Route path="/train-the-brain" element={<TrainTheBrainGame />} />
           <Route path="/smart-or-not" element={<SmartOrNotGame />} />
