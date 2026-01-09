@@ -1,6 +1,6 @@
 import React from "react";
 
-const SuccessResult = ({ onRetry, onNextChallenge, accuracy = 88, missingParts = "Context", points = 2 }) => {
+const SuccessResult = ({ onRetry, accuracy = 88, missingParts = "Context", points = 2 }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-[#0A160E] flex flex-col justify-between overflow-hidden">
@@ -95,14 +95,14 @@ const SuccessResult = ({ onRetry, onNextChallenge, accuracy = 88, missingParts =
         </div>
 
         {/* Success Message */}
-        <h2 className="text-yellow-400 lilita-one-regular text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-center">
+        <h2 className="text-green-400 lilita-one-regular text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-center">
           Yay! Prompt is correct
         </h2>
 
         {/* Two Info Cards */}
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 w-full max-w-2xl px-4">
           {/* TOTAL ACCURACY Card */}
-          <div className="flex-1 bg-yellow-400 rounded-xl p-1 border-2 border-black">
+          <div className="flex-1 bg-green-500 rounded-xl p-1 border-2 border-black">
             <div className="bg-[#131F24] rounded-lg p-4 text-center">
               <p className="text-white text-sm sm:text-base font-bold mb-2 lilita-one-regular">
                 TOTAL ACCURACY
@@ -110,7 +110,7 @@ const SuccessResult = ({ onRetry, onNextChallenge, accuracy = 88, missingParts =
               <div className="flex items-center justify-center gap-2">
                 {/* Checkmark Icon */}
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-8 h-8 text-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -122,7 +122,7 @@ const SuccessResult = ({ onRetry, onNextChallenge, accuracy = 88, missingParts =
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-white text-3xl sm:text-4xl font-extrabold lilita-one-regular">
+                <span className="text-green-400 text-3xl sm:text-4xl font-extrabold lilita-one-regular">
                   {accuracy}%
                 </span>
               </div>
@@ -130,12 +130,12 @@ const SuccessResult = ({ onRetry, onNextChallenge, accuracy = 88, missingParts =
           </div>
 
           {/* MISSING PARTS Card */}
-          <div className="flex-1 bg-red-600 rounded-xl p-1 border-2 border-black">
+          <div className="flex-1 bg-green-500 rounded-xl p-1 border-2 border-black">
             <div className="bg-[#131F24] rounded-lg p-4 text-center">
               <p className="text-white text-sm sm:text-base font-bold mb-2 lilita-one-regular">
                 MISSING PARTS
               </p>
-              <p className="text-white text-xl sm:text-2xl font-bold lilita-one-regular">
+              <p className="text-green-400 text-xl sm:text-2xl font-bold lilita-one-regular">
                 {missingParts}
               </p>
             </div>
@@ -144,13 +144,13 @@ const SuccessResult = ({ onRetry, onNextChallenge, accuracy = 88, missingParts =
       </div>
 
       {/* Bottom Action Bar */}
-      <div className="bg-[#2f3e46] border-t border-gray-700 py-4 px-6 flex justify-center gap-4 sm:gap-6">
-        {/* Retry Button */}
+      <div className="bg-[#2f3e46] border-t border-gray-700 py-4 px-6 flex justify-center shrink-0">
+        {/* Try Again Button */}
         <button
           onClick={onRetry}
-          className="bg-red-600 hover:bg-red-700 border-2 border-white text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-lg transition-all duration-200 active:scale-95 flex items-center gap-2 lilita-one-regular text-base sm:text-lg"
+          className="bg-green-500 hover:bg-green-600 border-2 border-white text-white font-bold py-3 px-8 sm:px-12 rounded-lg shadow-lg transition-all duration-200 active:scale-95 flex items-center gap-2 lilita-one-regular text-base sm:text-lg"
         >
-          <span>Retry</span>
+          <span>Try Again</span>
           <svg
             className="w-5 h-5"
             fill="none"
@@ -162,27 +162,6 @@ const SuccessResult = ({ onRetry, onNextChallenge, accuracy = 88, missingParts =
               strokeLinejoin="round"
               strokeWidth={2}
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-        </button>
-
-        {/* Next Challenge Button */}
-        <button
-          onClick={onNextChallenge}
-          className="bg-green-600 hover:bg-green-700 border-2 border-white text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-lg transition-all duration-200 active:scale-95 flex items-center gap-2 lilita-one-regular text-base sm:text-lg"
-        >
-          <span>Next Challenge</span>
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
             />
           </svg>
         </button>

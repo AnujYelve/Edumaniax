@@ -6,10 +6,18 @@ const FailureResult = ({ onRetry, missingParts = "Context", solutionText = "", l
   if (solutionText) {
     try {
       solutionData = JSON.parse(solutionText);
+      
+      // Debug: Log parsed solution data in FailureResult
+      console.log("FailureResult - Parsed solutionData:", solutionData);
+      console.log("FailureResult - System Prompt:", solutionData.systemPrompt);
+      console.log("FailureResult - User Prompt:", solutionData.userPrompt);
     } catch (e) {
+      console.error("FailureResult - Error parsing solutionText:", e);
       // If not JSON, treat as plain text explanation
       solutionData = { systemPrompt: "", userPrompt: "", explanation: solutionText };
     }
+  } else {
+    console.log("FailureResult - No solutionText provided");
   }
 
   return (
@@ -52,63 +60,67 @@ const FailureResult = ({ onRetry, missingParts = "Context", solutionText = "", l
           </div>
         </div>
 
-        {/* Correct Answer Section - Only show if solutionText exists */}
-        {solutionText && (
-          <div className="w-full max-w-2xl mb-6 shrink-0">
-            <div className="bg-green-600 rounded-xl p-1 border-2 border-black">
-              <div className="bg-black rounded-lg p-6">
-                <p className="text-white text-sm sm:text-base font-bold mb-4 lilita-one-regular uppercase text-center">
-                  CORRECT ANSWER
-                </p>
-                
-                {loadingSolution ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                    <span className="ml-3 text-white text-sm lilita-one-regular">Loading...</span>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {/* System Prompt Section */}
-                    {solutionData.systemPrompt && (
-                      <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-[#fb923c]">
-                        <p className="text-[#fb923c] text-sm font-bold mb-2 lilita-one-regular uppercase">
-                          System Prompt
-                        </p>
-                        <p className="text-white text-sm sm:text-base leading-relaxed lilita-one-regular whitespace-pre-wrap">
-                          {solutionData.systemPrompt}
-                        </p>
-                      </div>
-                    )}
+        {/* Correct Answer Section - Always show (loading or loaded) */}
+        <div className="w-full max-w-2xl mb-6 shrink-0">
+          <div className="bg-green-600 rounded-xl p-1 border-2 border-black">
+            <div className="bg-black rounded-lg p-6">
+              <p className="text-white text-sm sm:text-base font-bold mb-4 lilita-one-regular uppercase text-center">
+                Correct System Prompt & User Prompt
+              </p>
+              
+              {loadingSolution ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                  <span className="ml-3 text-white text-sm lilita-one-regular">Loading correct answer...</span>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* System Prompt Section */}
+                  {solutionData.systemPrompt ? (
+                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-[#fb923c]">
+                      <p className="text-[#fb923c] text-sm font-bold mb-2 lilita-one-regular uppercase">
+                        Correct System Prompt
+                      </p>
+                      <p className="text-white text-sm sm:text-base leading-relaxed lilita-one-regular whitespace-pre-wrap">
+                        {solutionData.systemPrompt}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-yellow-400">
+                      <p className="text-yellow-400 text-sm font-bold mb-2 lilita-one-regular uppercase">
+                        System Prompt
+                      </p>
+                      <p className="text-gray-400 text-sm italic lilita-one-regular">
+                        Not available
+                      </p>
+                    </div>
+                  )}
 
-                    {/* User Prompt Section */}
-                    {solutionData.userPrompt && (
-                      <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-[#4ade80]">
-                        <p className="text-[#4ade80] text-sm font-bold mb-2 lilita-one-regular uppercase">
-                          User Prompt
-                        </p>
-                        <p className="text-white text-sm sm:text-base leading-relaxed lilita-one-regular whitespace-pre-wrap">
-                          {solutionData.userPrompt}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Explanation Section */}
-                    {solutionData.explanation && (
-                      <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-yellow-400">
-                        <p className="text-yellow-400 text-sm font-bold mb-2 lilita-one-regular uppercase">
-                          Explanation
-                        </p>
-                        <p className="text-white text-sm sm:text-base leading-relaxed lilita-one-regular whitespace-pre-wrap">
-                          {solutionData.explanation}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                  {/* User Prompt Section */}
+                  {solutionData.userPrompt ? (
+                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-[#4ade80]">
+                      <p className="text-[#4ade80] text-sm font-bold mb-2 lilita-one-regular uppercase">
+                        Correct User Prompt
+                      </p>
+                      <p className="text-white text-sm sm:text-base leading-relaxed lilita-one-regular whitespace-pre-wrap">
+                        {solutionData.userPrompt}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-yellow-400">
+                      <p className="text-yellow-400 text-sm font-bold mb-2 lilita-one-regular uppercase">
+                        User Prompt
+                      </p>
+                      <p className="text-gray-400 text-sm italic lilita-one-regular">
+                        Not available
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Bottom Action Bar */}
@@ -118,7 +130,7 @@ const FailureResult = ({ onRetry, missingParts = "Context", solutionText = "", l
           onClick={onRetry}
           className="bg-red-600 hover:bg-red-700 border-2 border-white text-white font-bold py-3 px-8 sm:px-12 rounded-lg shadow-lg transition-all duration-200 active:scale-95 flex items-center gap-2 lilita-one-regular text-base sm:text-lg"
         >
-          <span>Retry</span>
+          <span>Try Again</span>
           <svg
             className="w-5 h-5"
             fill="none"

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAudio } from "@/contexts/AudioContext";
 
-const GameNav = ({ heartCount = 3, onHintClick }) => {
+const GameNav = ({ heartCount = 3 }) => {
   const { isPlaying, toggleAudio } = useAudio();
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -103,33 +103,6 @@ const GameNav = ({ heartCount = 3, onHintClick }) => {
           </div>
         </div>
 
-        {/* Hint Button */}
-        {onHintClick && (
-          <button
-            onClick={onHintClick}
-            className="relative min-w-[60px] sm:min-w-[90px] h-[28px] sm:h-[40px] transition active:scale-95 focus:outline-none"
-          >
-            <div
-              className="absolute inset-0"
-              style={{
-                clipPath: "polygon(4.2% 0, 99% 0, 93% 100%, 0% 100%)",
-                backgroundColor: "#000",
-                transform: "translateY(1px)",
-              }}
-            />
-            <div
-              className="absolute inset-0 bg-[#232E34] flex items-center justify-center gap-1 sm:gap-2"
-              style={{
-                clipPath: "polygon(5.5% 0, 99% 0, 93% 100%, 0% 100%)",
-                border: "1px solid black",
-              }}
-            >
-              <span className="text-yellow-400 font-bold text-xs sm:text-sm">
-                💡 Hint
-              </span>
-            </div>
-          </button>
-        )}
 
         {/* Audio Toggle (PC view only) */}
         <button
