@@ -22,7 +22,6 @@ export default function PromptCreatorGame() {
   const [loading, setLoading] = useState(false);
   const [loadingScenario, setLoadingScenario] = useState(false);
   const [showIncorrectPopup, setShowIncorrectPopup] = useState(false);
-  const [showHintPopup, setShowHintPopup] = useState(false);
   const [hintText, setHintText] = useState("");
   const [loadingHint, setLoadingHint] = useState(false);
   const [solutionText, setSolutionText] = useState("");
@@ -69,15 +68,31 @@ export default function PromptCreatorGame() {
     try {
       const response = await evaluatePrompts(scenario, systemPrompt, userPrompt);
       
-      if (response.result === "correct") {
+      // Normalize backend response for comparison (handle case/format variations)
+      const result = (response.result || "").toLowerCase().trim();
+      
+      // Debug: Log the actual response value
+      console.log("Backend response.result:", response.result);
+      console.log("Normalized result:", result);
+      
+      if (["correct", "pass", "passed", "success", "true"].includes(result)) {
+
+        // CORRECT ANSWER: Skip popup entirely, go directly to win screen
+        // Clear popup state first, then set correct state
+        setShowIncorrectPopup(false);
+        setHintText(""); // Clear any existing hint
         setIsCorrect(true);
         setFeedback(response.feedback || "Great job! Your prompts are correct!");
         setAccuracy(100); // Perfect score for correct answer
-        setSubmitted(true);
+        setSubmitted(true); // Immediately show win screen - triggers early return in render
+        return; // Early return to prevent any further processing
       } else {
         // Incorrect answer
         setFeedback(response.feedback || "Your prompts need improvement.");
         setShowIncorrectPopup(true);
+        
+        // Automatically fetch hint on incorrect attempt
+        fetchHintAutomatically();
         
         // Reduce hearts
         const newHeartCount = heartCount - 1;
@@ -149,7 +164,18 @@ export default function PromptCreatorGame() {
     setLoadingSolution(true);
     try {
       const response = await getSolution(scenario);
+      
+      // Debug: Log full backend response
+      console.log("Game Over solution response:", response);
+      console.log("Raw solution_text:", response.solution_text);
+      
       const parsed = parseSolution(response.solution_text || "");
+      
+      // Debug: Log extracted prompts
+      console.log("Correct system prompt:", parsed.systemPrompt);
+      console.log("Correct user prompt:", parsed.userPrompt);
+      console.log("Parsed solution data:", parsed);
+      
       setSolutionText(JSON.stringify(parsed)); // Store as JSON string for easy passing
     } catch (error) {
       console.error("Error getting solution:", error);
@@ -159,18 +185,16 @@ export default function PromptCreatorGame() {
     }
   };
 
-  const handleHintClick = async () => {
+  const fetchHintAutomatically = async () => {
     if (!scenario || loadingHint) return;
     
     setLoadingHint(true);
     try {
       const response = await getHint(scenario, systemPrompt, userPrompt, attemptNumber);
       setHintText(response.solution_text || "No hint available.");
-      setShowHintPopup(true);
     } catch (error) {
       console.error("Error getting hint:", error);
       setHintText("Error loading hint. Please try again.");
-      setShowHintPopup(true);
     } finally {
       setLoadingHint(false);
     }
@@ -186,13 +210,11 @@ export default function PromptCreatorGame() {
     setFeedback("");
     setAccuracy(0);
     setSolutionText("");
+    setHintText("");
+    setShowIncorrectPopup(false);
     loadNewGame();
   };
 
-  const handleNextChallenge = () => {
-    // For now, reset to allow new game
-    handleRetry();
-  };
 
   const closeIncorrectPopup = () => {
     setShowIncorrectPopup(false);
@@ -202,9 +224,6 @@ export default function PromptCreatorGame() {
     }
   };
 
-  const closeHintPopup = () => {
-    setShowHintPopup(false);
-  };
 
   if (showIntro) {
     return <IntroScreen />;
@@ -223,8 +242,8 @@ export default function PromptCreatorGame() {
     if (isCorrect) {
       return (
         <SuccessResult
+          key={scenario}
           onRetry={handleRetry}
-          onNextChallenge={handleNextChallenge}
           accuracy={accuracy}
           missingParts={feedback}
           points={2}
@@ -244,7 +263,7 @@ export default function PromptCreatorGame() {
 
   return (
     <>
-      <GameNav heartCount={heartCount} onHintClick={handleHintClick} />
+      <GameNav heartCount={heartCount} />
       <div className="min-h-screen bg-[#0A160E] pt-20 md:pt-50 pb-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Speech Bubble with Scenario */}
@@ -317,8 +336,8 @@ export default function PromptCreatorGame() {
         </div>
       </div>
 
-      {/* Incorrect Answer Popup */}
-      {showIncorrectPopup && (
+      {/* Incorrect Answer Popup - NEVER show for correct answers */}
+      {showIncorrectPopup && !submitted && !isCorrect && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000]">
           <div className="bg-[#131F24] border-2 border-red-500 rounded-2xl p-6 md:p-8 text-center shadow-2xl w-11/12 max-w-md mx-auto">
             <div className="mb-4">
@@ -330,44 +349,46 @@ export default function PromptCreatorGame() {
                   {feedback}
                 </p>
               </div>
+              
+              {/* Hint Section */}
+              {hintText && (
+                <div className="bg-[#1a2a2e] rounded-lg p-4 mt-4 border-l-4 border-yellow-400">
+                  <h3 className="text-yellow-400 text-lg font-bold mb-2 lilita-one-regular text-left">
+                    💡 Hint
+                  </h3>
+                  {loadingHint ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-400"></div>
+                      <span className="ml-3 text-white text-sm lilita-one-regular">Loading hint...</span>
+                    </div>
+                  ) : (
+                    <p className="text-white text-sm sm:text-base leading-relaxed text-left lilita-one-regular">
+                      {hintText}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
             <button
               onClick={closeIncorrectPopup}
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-bold transition-colors lilita-one-regular"
             >
-              {heartCount <= 0 ? "Continue" : "Try Again"}
+              Continue
             </button>
           </div>
         </div>
       )}
 
-      {/* Hint Popup */}
-      {showHintPopup && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000]">
-          <div className="bg-[#131F24] border-2 border-yellow-500 rounded-2xl p-6 md:p-8 text-center shadow-2xl w-11/12 max-w-md mx-auto">
-            <div className="mb-4">
-              <h2 className="text-yellow-400 text-2xl md:text-3xl font-bold mb-4 lilita-one-regular">
-                💡 Hint
-              </h2>
-              {loadingHint ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
-                  <span className="ml-4 text-white text-lg lilita-one-regular">Loading hint...</span>
-                </div>
-              ) : (
-                <div className="bg-[#1a2a2e] rounded-lg p-4 mt-4">
-                  <p className="text-white text-sm sm:text-base leading-relaxed">
-                    {hintText}
-                  </p>
-                </div>
-              )}
-            </div>
-            <button
-              onClick={closeHintPopup}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-bold transition-colors lilita-one-regular"
-            >
-              Close
-            </button>
+      {/* Persistent Hint Display */}
+      {hintText && !showIncorrectPopup && (
+        <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-4 md:w-80 z-30">
+          <div className="bg-[#1a2a2e] border-2 border-yellow-400 rounded-lg p-4 shadow-lg">
+            <h3 className="text-yellow-400 text-lg font-bold mb-2 lilita-one-regular flex items-center gap-2">
+              💡 Hint
+            </h3>
+            <p className="text-white text-sm leading-relaxed lilita-one-regular">
+              {hintText}
+            </p>
           </div>
         </div>
       )}
