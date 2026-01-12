@@ -5,7 +5,7 @@ import GameNav from "./GameNav";
 import SuccessResult from "./SuccessResult";
 import FailureResult from "./FailureResult";
 import InstructionOverlay from "./InstructionOverlay";
-import { createNewGame, evaluatePrompts, getHint, getSolution } from "./api";
+import { createNewGame, evaluatePrompts, getSolution } from "./api";
 
 export default function PromptCreatorGame() {
   const [showIntro, setShowIntro] = useState(true);
@@ -22,8 +22,7 @@ export default function PromptCreatorGame() {
   const [loading, setLoading] = useState(false);
   const [loadingScenario, setLoadingScenario] = useState(false);
   const [showIncorrectPopup, setShowIncorrectPopup] = useState(false);
-  const [hintText, setHintText] = useState("");
-  const [loadingHint, setLoadingHint] = useState(false);
+  const [floatingFeedback, setFloatingFeedback] = useState("");
   const [solutionText, setSolutionText] = useState("");
   const [loadingSolution, setLoadingSolution] = useState(false);
   const navigate = useNavigate();
@@ -66,33 +65,29 @@ export default function PromptCreatorGame() {
 
     setLoading(true);
     try {
+      // Debug: Log raw response
       const response = await evaluatePrompts(scenario, systemPrompt, userPrompt);
+      console.log("Raw /evaluate response:", response);
       
-      // Normalize backend response for comparison (handle case/format variations)
-      const result = (response.result || "").toLowerCase().trim();
+      // Normalize backend response status (handle case/format variations)
+      const status = (response.status || "").toLowerCase().trim();
+      console.log("Normalized status:", status);
       
-      // Debug: Log the actual response value
-      console.log("Backend response.result:", response.result);
-      console.log("Normalized result:", result);
-      
-      if (["correct", "pass", "passed", "success", "true"].includes(result)) {
-
+      if (status === "pass") {
         // CORRECT ANSWER: Skip popup entirely, go directly to win screen
-        // Clear popup state first, then set correct state
         setShowIncorrectPopup(false);
-        setHintText(""); // Clear any existing hint
+        setFloatingFeedback(""); // Clear any floating feedback
         setIsCorrect(true);
         setFeedback(response.feedback || "Great job! Your prompts are correct!");
         setAccuracy(100); // Perfect score for correct answer
         setSubmitted(true); // Immediately show win screen - triggers early return in render
         return; // Early return to prevent any further processing
       } else {
-        // Incorrect answer
-        setFeedback(response.feedback || "Your prompts need improvement.");
+        // Incorrect answer - use feedback from /evaluate directly
+        const feedbackText = response.feedback || "Your prompts need improvement.";
+        setFeedback(feedbackText);
+        setFloatingFeedback(feedbackText); // Store for floating display after popup closes
         setShowIncorrectPopup(true);
-        
-        // Automatically fetch hint on incorrect attempt
-        fetchHintAutomatically();
         
         // Reduce hearts
         const newHeartCount = heartCount - 1;
@@ -122,39 +117,95 @@ export default function PromptCreatorGame() {
   };
 
   const parseSolution = (solutionText) => {
-    if (!solutionText) return { systemPrompt: "", userPrompt: "", explanation: "" };
+    if (!solutionText) return { systemPrompt: "", userPrompt: "" };
     
-    // Try to extract structured information from the solution text
     const text = solutionText.trim();
+    let systemPrompt = "";
+    let userPrompt = "";
     
-    // Pattern 1: Look for explicit labels like "System Prompt:", "User Prompt:", etc.
-    const systemMatch = text.match(/(?:System Prompt|System|System Input)[:\s]+(.*?)(?=\n(?:User|Explanation|$))/is);
-    const userMatch = text.match(/(?:User Prompt|User|User Input)[:\s]+(.*?)(?=\n(?:System|Explanation|$))/is);
-    const explanationMatch = text.match(/(?:Explanation|Solution|Note)[:\s]+(.*?)$/is);
+    // Pattern 1: Look for [SYSTEM]: and [USER]: format
+    const systemBracketMatch = text.match(/\[SYSTEM\]:\s*(.*?)(?=\n\[USER\]:|$)/is);
+    const userBracketMatch = text.match(/\[USER\]:\s*(.*?)(?=\n\[SYSTEM\]:|$)/is);
     
-    let systemPrompt = systemMatch ? systemMatch[1].trim() : "";
-    let userPrompt = userMatch ? userMatch[1].trim() : "";
-    let explanation = explanationMatch ? explanationMatch[1].trim() : "";
+    if (systemBracketMatch && userBracketMatch) {
+      systemPrompt = systemBracketMatch[1].trim();
+      userPrompt = userBracketMatch[1].trim();
+    }
     
-    // Pattern 2: If no explicit labels, try to split by common separators
-    if (!systemPrompt && !userPrompt) {
-      const parts = text.split(/\n\s*\n/);
-      if (parts.length >= 2) {
-        systemPrompt = parts[0].trim();
-        userPrompt = parts[1].trim();
-        if (parts.length > 2) {
-          explanation = parts.slice(2).join("\n\n").trim();
+    // Pattern 2: Look for "System Prompt:" and "User Prompt:" (case insensitive, with optional prefixes)
+    if (!systemPrompt || !userPrompt) {
+      // Remove option prefixes like "- Option 1:", "- Option 2:", etc.
+      const cleanedText = text.replace(/^-\s*Option\s+\d+:\s*/gim, "");
+      
+      // Try various system prompt patterns
+      const systemPatterns = [
+        /(?:System\s+Prompt|System|System\s+Input|System\s+Role)[:\s]+(.*?)(?=\n\s*(?:User|User\s+Prompt|User\s+Input|\[USER\]|Explanation|$))/is,
+        /System[:\s]+(.*?)(?=\n\s*(?:User|\[USER\]|$))/is
+      ];
+      
+      // Try various user prompt patterns
+      const userPatterns = [
+        /(?:User\s+Prompt|User|User\s+Input)[:\s]+(.*?)(?=\n\s*(?:System|System\s+Prompt|\[SYSTEM\]|Explanation|$))/is,
+        /User[:\s]+(.*?)(?=\n\s*(?:System|\[SYSTEM\]|$))/is
+      ];
+      
+      for (const pattern of systemPatterns) {
+        const match = cleanedText.match(pattern);
+        if (match) {
+          systemPrompt = match[1].trim();
+          // Remove any remaining option prefixes from the extracted text
+          systemPrompt = systemPrompt.replace(/^-\s*Option\s+\d+:\s*/gim, "").trim();
+          break;
         }
-      } else {
-        // If it's a single block, treat it as explanation/combined solution
-        explanation = text;
+      }
+      
+      for (const pattern of userPatterns) {
+        const match = cleanedText.match(pattern);
+        if (match) {
+          userPrompt = match[1].trim();
+          // Remove any remaining option prefixes from the extracted text
+          userPrompt = userPrompt.replace(/^-\s*Option\s+\d+:\s*/gim, "").trim();
+          break;
+        }
       }
     }
+    
+    // Pattern 3: If still not found, try splitting by double newlines or common separators
+    if (!systemPrompt || !userPrompt) {
+      // Try splitting by double newlines
+      const parts = text.split(/\n\s*\n+/);
+      if (parts.length >= 2) {
+        // First part might be system, second might be user
+        const part1 = parts[0].trim().replace(/^-\s*Option\s+\d+:\s*/gim, "");
+        const part2 = parts[1].trim().replace(/^-\s*Option\s+\d+:\s*/gim, "");
+        
+        // Check if parts contain keywords to identify them
+        if (!systemPrompt && (part1.toLowerCase().includes("system") || !part1.toLowerCase().includes("user"))) {
+          systemPrompt = part1.replace(/(?:System\s+Prompt|System)[:\s]+/i, "").trim();
+        }
+        if (!userPrompt && (part2.toLowerCase().includes("user") || !part2.toLowerCase().includes("system"))) {
+          userPrompt = part2.replace(/(?:User\s+Prompt|User)[:\s]+/i, "").trim();
+        }
+        
+        // If still not identified, assign by position
+        if (!systemPrompt && !userPrompt) {
+          systemPrompt = part1;
+          userPrompt = part2;
+        }
+      }
+    }
+    
+    // Clean up extracted prompts - remove any remaining prefixes and extra whitespace
+    systemPrompt = systemPrompt.replace(/^-\s*Option\s+\d+:\s*/gim, "").replace(/^(?:System\s+Prompt|System)[:\s]+/i, "").trim();
+    userPrompt = userPrompt.replace(/^-\s*Option\s+\d+:\s*/gim, "").replace(/^(?:User\s+Prompt|User)[:\s]+/i, "").trim();
+    
+    // Debug logging
+    console.log("Parsed system prompt:", systemPrompt);
+    console.log("Parsed user prompt:", userPrompt);
     
     return {
       systemPrompt: systemPrompt || "",
       userPrompt: userPrompt || "",
-      explanation: explanation || (systemPrompt && userPrompt ? "" : text)
     };
   };
 
@@ -166,37 +217,21 @@ export default function PromptCreatorGame() {
       const response = await getSolution(scenario);
       
       // Debug: Log full backend response
-      console.log("Game Over solution response:", response);
-      console.log("Raw solution_text:", response.solution_text);
+      console.log("Raw /solution response:", response);
+      console.log("Raw solution string:", response.solution);
       
-      const parsed = parseSolution(response.solution_text || "");
+      const parsed = parseSolution(response.solution || "");
       
-      // Debug: Log extracted prompts
-      console.log("Correct system prompt:", parsed.systemPrompt);
-      console.log("Correct user prompt:", parsed.userPrompt);
-      console.log("Parsed solution data:", parsed);
+      // Debug: Log extracted prompts (also logged in parseSolution)
+      console.log("Final parsed system prompt:", parsed.systemPrompt);
+      console.log("Final parsed user prompt:", parsed.userPrompt);
       
       setSolutionText(JSON.stringify(parsed)); // Store as JSON string for easy passing
     } catch (error) {
       console.error("Error getting solution:", error);
-      setSolutionText(JSON.stringify({ systemPrompt: "", userPrompt: "", explanation: "Error loading solution. Please try again." }));
+      setSolutionText(JSON.stringify({ systemPrompt: "", userPrompt: "" }));
     } finally {
       setLoadingSolution(false);
-    }
-  };
-
-  const fetchHintAutomatically = async () => {
-    if (!scenario || loadingHint) return;
-    
-    setLoadingHint(true);
-    try {
-      const response = await getHint(scenario, systemPrompt, userPrompt, attemptNumber);
-      setHintText(response.solution_text || "No hint available.");
-    } catch (error) {
-      console.error("Error getting hint:", error);
-      setHintText("Error loading hint. Please try again.");
-    } finally {
-      setLoadingHint(false);
     }
   };
 
@@ -210,7 +245,7 @@ export default function PromptCreatorGame() {
     setFeedback("");
     setAccuracy(0);
     setSolutionText("");
-    setHintText("");
+    setFloatingFeedback("");
     setShowIncorrectPopup(false);
     loadNewGame();
   };
@@ -349,25 +384,6 @@ export default function PromptCreatorGame() {
                   {feedback}
                 </p>
               </div>
-              
-              {/* Hint Section */}
-              {hintText && (
-                <div className="bg-[#1a2a2e] rounded-lg p-4 mt-4 border-l-4 border-yellow-400">
-                  <h3 className="text-yellow-400 text-lg font-bold mb-2 lilita-one-regular text-left">
-                    💡 Hint
-                  </h3>
-                  {loadingHint ? (
-                    <div className="flex items-center justify-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-400"></div>
-                      <span className="ml-3 text-white text-sm lilita-one-regular">Loading hint...</span>
-                    </div>
-                  ) : (
-                    <p className="text-white text-sm sm:text-base leading-relaxed text-left lilita-one-regular">
-                      {hintText}
-                    </p>
-                  )}
-                </div>
-              )}
             </div>
             <button
               onClick={closeIncorrectPopup}
@@ -379,15 +395,15 @@ export default function PromptCreatorGame() {
         </div>
       )}
 
-      {/* Persistent Hint Display */}
-      {hintText && !showIncorrectPopup && (
+      {/* Floating Feedback Display - Shows after popup closes */}
+      {floatingFeedback && !showIncorrectPopup && !submitted && (
         <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-4 md:w-80 z-30">
-          <div className="bg-[#1a2a2e] border-2 border-yellow-400 rounded-lg p-4 shadow-lg">
-            <h3 className="text-yellow-400 text-lg font-bold mb-2 lilita-one-regular flex items-center gap-2">
-              💡 Hint
+          <div className="bg-[#1a2a2e] border-2 border-blue-400 rounded-lg p-4 shadow-lg">
+            <h3 className="text-blue-400 text-lg font-bold mb-2 lilita-one-regular flex items-center gap-2">
+              💬 Feedback
             </h3>
             <p className="text-white text-sm leading-relaxed lilita-one-regular">
-              {hintText}
+              {floatingFeedback}
             </p>
           </div>
         </div>

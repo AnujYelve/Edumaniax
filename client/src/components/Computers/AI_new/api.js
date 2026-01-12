@@ -4,15 +4,15 @@ import axios from "axios";
 const API_BASE_URL = import.meta.env.VITE_AI_GAME_BACKEND_URL || "http://localhost:8000";
 
 /**
- * Create a new game and get scenario
- * @returns {Promise<{seed: string, scenario: string}>}
+ * Get a random mission/scenario
+ * @returns {Promise<{scenario: string}>}
  */
 export const createNewGame = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/new-game`);
+    const response = await axios.get(`${API_BASE_URL}/mission/random`);
     return response.data;
   } catch (error) {
-    console.error("Error creating new game:", error);
+    console.error("Error getting random mission:", error);
     throw error;
   }
 };
@@ -20,16 +20,16 @@ export const createNewGame = async () => {
 /**
  * Evaluate user prompts
  * @param {string} scenario - The scenario text
- * @param {string} system_input - The system prompt
- * @param {string} user_input - The user prompt
- * @returns {Promise<{result: "correct" | "incorrect", feedback: string}>}
+ * @param {string} system_role - The system prompt
+ * @param {string} user_prompt - The user prompt
+ * @returns {Promise<{status: string, feedback: string}>}
  */
-export const evaluatePrompts = async (scenario, system_input, user_input) => {
+export const evaluatePrompts = async (scenario, system_role, user_prompt) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/evaluate`, {
       scenario,
-      system_input,
-      user_input,
+      system_role,
+      user_prompt,
     });
     return response.data;
   } catch (error) {
@@ -39,32 +39,9 @@ export const evaluatePrompts = async (scenario, system_input, user_input) => {
 };
 
 /**
- * Get hint for the current attempt
- * @param {string} scenario - The scenario text
- * @param {string} system_input - The system prompt
- * @param {string} user_input - The user prompt
- * @param {number} attempt_number - 1-based attempt number
- * @returns {Promise<{solution_text: string}>}
- */
-export const getHint = async (scenario, system_input, user_input, attempt_number) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/hint`, {
-      scenario,
-      system_input,
-      user_input,
-      attempt_number,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error getting hint:", error);
-    throw error;
-  }
-};
-
-/**
  * Get solution for the scenario
  * @param {string} scenario - The scenario text
- * @returns {Promise<{solution_text: string}>}
+ * @returns {Promise<{solution: string}>}
  */
 export const getSolution = async (scenario) => {
   try {
@@ -77,5 +54,6 @@ export const getSolution = async (scenario) => {
     throw error;
   }
 };
+
 
 
