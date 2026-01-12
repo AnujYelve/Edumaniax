@@ -2,22 +2,14 @@ import React from "react";
 
 const FailureResult = ({ onRetry, missingParts = "Context", solutionText = "", loadingSolution = false }) => {
   // Parse solution text
-  let solutionData = { systemPrompt: "", userPrompt: "", explanation: "" };
+  let solutionData = { systemPrompt: "", userPrompt: "" };
   if (solutionText) {
     try {
       solutionData = JSON.parse(solutionText);
-      
-      // Debug: Log parsed solution data in FailureResult
-      console.log("FailureResult - Parsed solutionData:", solutionData);
-      console.log("FailureResult - System Prompt:", solutionData.systemPrompt);
-      console.log("FailureResult - User Prompt:", solutionData.userPrompt);
     } catch (e) {
       console.error("FailureResult - Error parsing solutionText:", e);
-      // If not JSON, treat as plain text explanation
-      solutionData = { systemPrompt: "", userPrompt: "", explanation: solutionText };
+      solutionData = { systemPrompt: "", userPrompt: "" };
     }
-  } else {
-    console.log("FailureResult - No solutionText provided");
   }
 
   return (
@@ -77,45 +69,31 @@ const FailureResult = ({ onRetry, missingParts = "Context", solutionText = "", l
                 <div className="space-y-4">
                   {/* System Prompt Section */}
                   {solutionData.systemPrompt ? (
-                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-[#fb923c]">
-                      <p className="text-[#fb923c] text-sm font-bold mb-2 lilita-one-regular uppercase">
+                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-green-500">
+                      <p className="text-green-400 text-sm font-bold mb-2 lilita-one-regular uppercase">
                         Correct System Prompt
                       </p>
-                      <p className="text-white text-sm sm:text-base leading-relaxed lilita-one-regular whitespace-pre-wrap">
-                        {solutionData.systemPrompt}
-                      </p>
+                      <div className="bg-[#0f1419] rounded p-3 border border-green-500/30">
+                        <p className="text-white text-sm sm:text-base leading-relaxed font-mono whitespace-pre-wrap break-words">
+                          {solutionData.systemPrompt}
+                        </p>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-yellow-400">
-                      <p className="text-yellow-400 text-sm font-bold mb-2 lilita-one-regular uppercase">
-                        System Prompt
-                      </p>
-                      <p className="text-gray-400 text-sm italic lilita-one-regular">
-                        Not available
-                      </p>
-                    </div>
-                  )}
+                  ) : null}
 
                   {/* User Prompt Section */}
                   {solutionData.userPrompt ? (
-                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-[#4ade80]">
-                      <p className="text-[#4ade80] text-sm font-bold mb-2 lilita-one-regular uppercase">
+                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-blue-400">
+                      <p className="text-blue-400 text-sm font-bold mb-2 lilita-one-regular uppercase">
                         Correct User Prompt
                       </p>
-                      <p className="text-white text-sm sm:text-base leading-relaxed lilita-one-regular whitespace-pre-wrap">
-                        {solutionData.userPrompt}
-                      </p>
+                      <div className="bg-[#0f1419] rounded p-3 border border-blue-400/30">
+                        <p className="text-white text-sm sm:text-base leading-relaxed font-mono whitespace-pre-wrap break-words">
+                          {solutionData.userPrompt}
+                        </p>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="bg-[#1a2a2e] rounded-lg p-4 border-l-4 border-yellow-400">
-                      <p className="text-yellow-400 text-sm font-bold mb-2 lilita-one-regular uppercase">
-                        User Prompt
-                      </p>
-                      <p className="text-gray-400 text-sm italic lilita-one-regular">
-                        Not available
-                      </p>
-                    </div>
-                  )}
+                  ) : null}
                 </div>
               )}
             </div>
