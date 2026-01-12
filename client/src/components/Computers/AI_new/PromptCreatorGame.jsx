@@ -67,13 +67,18 @@ export default function PromptCreatorGame() {
     try {
       // Debug: Log raw response
       const response = await evaluatePrompts(scenario, systemPrompt, userPrompt);
-      console.log("Raw /evaluate response:", response);
+      console.log("Raw evaluate response:", response);
       
-      // Normalize backend response status (handle case/format variations)
-      const status = (response.status || "").toLowerCase().trim();
-      console.log("Normalized status:", status);
+      // Parse correctness from feedback string (not status)
+      // Backend encodes correctness in feedback like "Option 1: PASS" or "Option 2: FAIL"
+      const normalizedFeedback = (response.feedback || "").toLowerCase().trim();
+      console.log("Normalized feedback:", normalizedFeedback);
       
-      if (status === "pass") {
+      // Determine correctness: feedback contains "option" AND "pass"
+      const isCorrect = normalizedFeedback.includes("option") && normalizedFeedback.includes("pass");
+      console.log("Derived isCorrect from feedback:", isCorrect);
+      
+      if (isCorrect) {
         // CORRECT ANSWER: Skip popup entirely, go directly to win screen
         setShowIncorrectPopup(false);
         setFloatingFeedback(""); // Clear any floating feedback
