@@ -64,6 +64,12 @@ const modulesfor6to8 = [
         duration: "45 min",
         path: "/build-a-bot", // ✅
       },
+      {
+        title: "Prompt Creator (Prompt Engineering Game)",
+        description: "Objective: Master the art of prompt engineering by crafting perfect User and System prompts.",
+        duration: "50 min",
+        path: "/prompt-creator", // ✅
+      },
     ],
   },
   {

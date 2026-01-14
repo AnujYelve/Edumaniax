@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAudio } from "@/contexts/AudioContext";
 
-const GameNav = ({ heartCount = 3 }) => {
+// SCORE DISPLAY — Added score props (do not modify game logic)
+const GameNav = ({ heartCount = 3, currentPoints = 0, maxPoints = 1000 }) => {
   const { isPlaying, toggleAudio } = useAudio();
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -75,6 +76,29 @@ const GameNav = ({ heartCount = 3 }) => {
 
       {/* ===== RIGHT SECTION ===== */}
       <div className="flex gap-2 items-center">
+        {/* SCORE DISPLAY — Score box (do not modify game logic) */}
+        <div className="relative min-w-[80px] sm:min-w-[120px] h-[28px] sm:h-[40px]">
+          <div
+            className="absolute inset-0"
+            style={{
+              clipPath: "polygon(4.2% 0, 99% 0, 93% 100%, 0% 100%)",
+              backgroundColor: "#000",
+              transform: "translateY(1px)",
+            }}
+          />
+          <div
+            className="absolute inset-0 bg-[#232E34] flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3"
+            style={{
+              clipPath: "polygon(5.5% 0, 99% 0, 93% 100%, 0% 100%)",
+              border: "1px solid black",
+            }}
+          >
+            <span className="text-white font-bold text-xs sm:text-sm lilita-one-regular">
+              SCORE: {currentPoints}/{maxPoints}
+            </span>
+          </div>
+        </div>
+
         {/* Heart Button (Always visible) */}
         <div className="relative min-w-[60px] sm:min-w-[90px] h-[28px] sm:h-[40px]">
           <div

@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import IntroScreen from "./IntroScreen";
 import GameNav from "./GameNav";
 import SuccessResult from "./SuccessResult";
 import FailureResult from "./FailureResult";
 import InstructionOverlay from "./InstructionOverlay";
-import { createNewGame, evaluatePrompts, getSolution } from "./api";
+import { createNewGame, evaluatePrompts, getSolution, fetchPoints, addPoints } from "./api";
 
 export default function PromptCreatorGame() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  // AUTH GUARD — Check token before game loads (do not modify game logic)
+  const [authReady, setAuthReady] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   const [showInstructions, setShowInstructions] = useState(false);
   const [scenario, setScenario] = useState("");
@@ -25,7 +31,75 @@ export default function PromptCreatorGame() {
   const [floatingFeedback, setFloatingFeedback] = useState("");
   const [solutionText, setSolutionText] = useState("");
   const [loadingSolution, setLoadingSolution] = useState(false);
-  const navigate = useNavigate();
+  // SCORE DISPLAY — do not modify game logic
+  const [currentPoints, setCurrentPoints] = useState(0);
+  const [maxPoints, setMaxPoints] = useState(1000);
+
+  // AUTH GUARD — Check authentication before game loads (do not modify game logic)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("[PromptCreatorGame] Token at game start:", token ? `${token.substring(0, 20)}...` : "MISSING");
+    console.log("[PromptCreatorGame] User entered via Computers page:", !!user);
+    
+    if (!token) {
+      console.warn("[PromptCreatorGame] Token missing, redirecting to Computers page");
+      navigate("/computer/games");
+      return;
+    }
+    
+    if (!user) {
+      console.warn("[PromptCreatorGame] User not loaded, waiting for auth...");
+      // Wait a bit for AuthContext to initialize
+      const timer = setTimeout(() => {
+        const stillNoUser = !localStorage.getItem("user");
+        if (stillNoUser) {
+          console.warn("[PromptCreatorGame] User still not loaded, redirecting");
+          navigate("/computer/games");
+        } else {
+          setAuthReady(true);
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    
+    setAuthReady(true);
+  }, [user, navigate]);
+
+  // SCORE DISPLAY — Load score when game starts (do not modify game logic)
+  useEffect(() => {
+    if (!authReady) return; // Wait for auth to be ready
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("[PromptCreatorGame] Token missing, skipping API call");
+      return;
+    }
+    
+    const loadScore = async () => {
+      try {
+        console.log("[FRONTEND] PromptCreatorGame - Loading score on game start");
+        const data = await fetchPoints();
+        console.log("[FRONTEND] PromptCreatorGame - Points received from backend:", data);
+        
+        // Only update if data is valid - do NOT reset to 0 on failure
+        if (data && data.points !== undefined) {
+          const points = data.points;
+          const max = data.maxPoints ?? 1000;
+          console.log("[FRONTEND] PromptCreatorGame - Setting score state - points:", points, "max:", max);
+          setCurrentPoints(points);
+          setMaxPoints(max);
+          console.log("[FRONTEND] PromptCreatorGame - Score state updated");
+        } else {
+          console.log("[FRONTEND] PromptCreatorGame - Invalid data received, keeping existing state");
+        }
+      } catch (error) {
+        console.error("[FRONTEND] PromptCreatorGame - Error loading score:", error);
+        // Do NOT reset score on failure - keep existing state
+        console.log("[FRONTEND] PromptCreatorGame - Keeping existing score state on error");
+      }
+    };
+    loadScore();
+  }, [authReady]);
 
   // Load scenario when game starts (after intro and instructions)
   useEffect(() => {
@@ -85,6 +159,48 @@ export default function PromptCreatorGame() {
         setIsCorrect(true);
         setFeedback(response.feedback || "Great job! Your prompts are correct!");
         setAccuracy(100); // Perfect score for correct answer
+        // SCORE DISPLAY — Update score after correct answer (do not modify game logic)
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.warn("[PromptCreatorGame] Token missing, skipping points API call");
+        } else {
+          try {
+            console.log("[FRONTEND] PromptCreatorGame - Correct answer detected, adding points");
+            console.log("[FRONTEND] PromptCreatorGame - Current score before update:", currentPoints);
+            const pointsData = await addPoints();
+            console.log("[FRONTEND] PromptCreatorGame - Points received from backend:", pointsData);
+            
+            // Only update if data is valid - do NOT reset to 0 on failure
+            if (pointsData && pointsData.points !== undefined) {
+              const newPoints = pointsData.points;
+              const newMax = pointsData.maxPoints ?? maxPoints;
+              console.log("[FRONTEND] PromptCreatorGame - Updating score state - new points:", newPoints, "new max:", newMax);
+              setCurrentPoints(newPoints);
+              setMaxPoints(newMax);
+              console.log("[FRONTEND] PromptCreatorGame - Score state after update - currentPoints:", newPoints, "maxPoints:", newMax);
+              
+              // Refetch score to ensure we have the latest value from DB
+              try {
+                const refreshedData = await fetchPoints();
+                console.log("[FRONTEND] PromptCreatorGame - Refetched score from DB:", refreshedData);
+                if (refreshedData && refreshedData.points !== undefined) {
+                  setCurrentPoints(refreshedData.points);
+                  setMaxPoints(refreshedData.maxPoints ?? maxPoints);
+                  console.log("[FRONTEND] PromptCreatorGame - Score state after refetch - currentPoints:", refreshedData.points, "maxPoints:", refreshedData.maxPoints);
+                }
+              } catch (refetchError) {
+                console.error("[FRONTEND] PromptCreatorGame - Error refetching score:", refetchError);
+                // Keep the score from addPoints response
+              }
+            } else {
+              console.log("[FRONTEND] PromptCreatorGame - Invalid points data received, keeping existing state");
+            }
+          } catch (error) {
+            console.error("[FRONTEND] PromptCreatorGame - Error updating score:", error);
+            // Don't block game flow if score update fails - keep existing score
+            console.log("[FRONTEND] PromptCreatorGame - Keeping existing score state on error");
+          }
+        }
         setSubmitted(true); // Immediately show win screen - triggers early return in render
         return; // Early return to prevent any further processing
       } else {
@@ -265,6 +381,18 @@ export default function PromptCreatorGame() {
   };
 
 
+  // AUTH GUARD — Show loader if auth not ready (do not modify game logic)
+  if (!authReady) {
+    return (
+      <div className="min-h-screen bg-[#0A160E] flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="lilita-one-regular">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (showIntro) {
     return <IntroScreen />;
   }
@@ -303,7 +431,7 @@ export default function PromptCreatorGame() {
 
   return (
     <>
-      <GameNav heartCount={heartCount} />
+      <GameNav heartCount={heartCount} currentPoints={currentPoints} maxPoints={maxPoints} />
       <div className="min-h-screen bg-[#0A160E] pt-20 md:pt-50 pb-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Speech Bubble with Scenario */}
