@@ -27,6 +27,7 @@ import specialRoutes from "./routes/specialRoutes.js";
 import salesRoutes from "./routes/salesRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 import certificationRoutes from "./routes/certificationRoutes.js";
+import aiNewRoutes from "./AI_new/ai_new.routes.js";
 import { initializeSubscriptionMonitoring } from "./utils/subscriptionManager.js";
 
 const app = express();
@@ -58,6 +59,7 @@ app.use("/special", specialRoutes); // Changed from /sales to /special
 app.use("/sales", salesRoutes); // Added back /sales route
 app.use("/subscriptions", subscriptionRoutes);
 app.use("/api/certifications", certificationRoutes);
+app.use("/api/ai-new", aiNewRoutes);
 
 // Health check endpoint
 app.get("/api/health", async (req, res) => {

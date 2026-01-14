@@ -22,6 +22,7 @@ model User {
   selectedModule             String?
   role                       UserRole                    @default(USER)
   avatar                     String?
+  promptGamePoints           Int                        @default(0)
   communicationChallenges    CommunicationChallenge[]
   computersChallenges        ComputersChallenge[]
   dmChallenges               DMChallenge[]
