@@ -141,16 +141,16 @@ export default function PromptCreatorGame() {
     try {
       // Debug: Log raw response
       const response = await evaluatePrompts(scenario, systemPrompt, userPrompt);
-      console.log("Raw evaluate response:", response);
+      console.log("[PROMPT CREATOR] Raw API Response:", response);
+      console.log("[PROMPT CREATOR] Backend Status:", response.status);
       
-      // Parse correctness from feedback string (not status)
-      // Backend encodes correctness in feedback like "Option 1: PASS" or "Option 2: FAIL"
-      const normalizedFeedback = (response.feedback || "").toLowerCase().trim();
-      console.log("Normalized feedback:", normalizedFeedback);
+      // PROMPT CREATOR STATUS CHECK FIX — Use backend status field instead of feedback text
+      const status = (response.status || "").toUpperCase().trim();
+      console.log("[PROMPT CREATOR] Normalized Status:", status);
       
-      // Determine correctness: feedback contains "option" AND "pass"
-      const isCorrect = normalizedFeedback.includes("option") && normalizedFeedback.includes("pass");
-      console.log("Derived isCorrect from feedback:", isCorrect);
+      // Determine correctness from status field only
+      const isCorrect = status === "PASS";
+      console.log("[PROMPT CREATOR] Is Correct:", isCorrect);
       
       if (isCorrect) {
         // CORRECT ANSWER: Skip popup entirely, go directly to win screen
